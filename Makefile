@@ -17,7 +17,8 @@ SRC = ./src/main.cpp \
 ./src/Engine/EngineObjects/GameObject.cpp \
 ./src/Engine/EngineObjects/GameObject_Parsing.cpp \
 ./src/Engine/EngineObjects/GameUIObject.cpp \
-./src/Engine/EngineObjects/GameTextObject.cpp
+./src/Engine/EngineObjects/GameTextObject.cpp \
+./src/Engine/EngineObjects/ParticleObject.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
@@ -25,6 +26,7 @@ CC = clang++ -g -Wall -Werror -Wextra $(FREETYPE2_I)
 
 # Linking opengl and lib GLFW.
 GL = -framework OpenGL
+CL = -framework opencl
 GLFW = -framework Cocoa -framework CoreVideo -framework IOKit -framework GLUT -L./glfw-3.2.1/src -lglfw3
 
 # For freetype true font loading library
@@ -34,7 +36,7 @@ FREETYPE2_I = -I./freetype-2.4.0/include
 all: freetype $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) -o $(NAME) $(OBJ) $(GL) $(GLFW) $(FREETYPE2_L)
+	$(CC) -o $(NAME) $(OBJ) $(GL) $(CL) $(GLFW) $(FREETYPE2_L)
 
 %.o: %.cpp
 	$(CC) -o $@ -c $<

@@ -32,6 +32,7 @@ class	EngineController
 		std::vector<GameObject *>			GameObjectList;
 		std::vector<GameTextObject *>		GameTextObjectList;
 		std::vector<GameUIObject *>			GameUIObjectList;
+		std::vector<ParticleObject *>		ParticleObjectList;
 
 		// ------ Engine's textures handling ------
 		TextureManager						TextureManager;
@@ -83,6 +84,21 @@ class	EngineController
 		// map of asciis 128 characters.
 		std::map<GLchar, Character>			Characters;
 
+		// ----- OpenCL variables
+		// gl cl sharing.
+		CGLContextObj						CGLContext;
+		CGLShareGroupObj					ShareGroup;
+
+		// cl default variables.
+		cl_platform_id						PlatformID;
+		cl_device_id						DeviceID;
+		// cl_context							Context;
+		cl_command_queue					CommandQueue;
+		cl_program							Program;
+		cl_kernel							Kernel;
+
+		cl_uint								RetNumDevices;
+		cl_uint								RetNumPlatforms;
 
 		// ----- Public Engine's methods.
 		EngineController();
@@ -105,6 +121,7 @@ class	EngineController
 			
 		int									initGLFW();
 		int									initOpenGL();
+		int									initOpenCL();
 		int									initFreeType();
 		void								loadFreeTypesCharacters();
 
@@ -117,6 +134,8 @@ class	EngineController
 
 		void								loadMatrices();
 		void								applyMatricesToObject(GameObject *Object);
+		void								applyMatricesToParticleObject(ParticleObject *Object);
+
 		// ----- Textures.
 		void								loadObjectTexture(GameObject *Object);
 
@@ -125,6 +144,7 @@ class	EngineController
 		void								draw3DModels();
 		void								drawUIObjects();
 		void								drawTextObjects();
+		void								drawParticleObjects();
 
 		// ----- Object rendering.
 		void								render3DGameObject(GameObject *obj);
@@ -132,6 +152,7 @@ class	EngineController
 		void								renderBoundingBox(GameObject *obj);
 		void								renderGameUIObject(GameUIObject *obj);
 		void								renderGameTextObject(GameTextObject *obj);
+		void								renderParticleObject(ParticleObject *obj);
 
 		static EngineController			m_instance;
 

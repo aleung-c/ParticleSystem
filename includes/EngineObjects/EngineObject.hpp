@@ -26,7 +26,7 @@ class EngineObject
 		TextureComponent				Texture;
 
 		GLuint							GetVao();
-		GLuint							GetVbo();		
+		GLuint							GetVbo();
 
 	protected:
 		GLuint							_vao;

@@ -66,7 +66,8 @@ void		EngineController::InitEngine(int windowWidth, int windowHeight, std::strin
 	WindowName = windowName;
 	if (initGLFW() == -1
 		|| initOpenGL() == -1
-		|| initFreeType() == -1)
+		|| initFreeType() == -1
+		|| initOpenCL())
 	{
 		std::cout << "Fatal error: Initialization error. Exiting..." << std::endl;
 		exit (-1);
@@ -181,7 +182,7 @@ int		EngineController::initOpenGL()
 	}
 
 	glEnable(GL_PROGRAM_POINT_SIZE);
-	glPointSize(4.0);
+	glPointSize(1.0);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -208,6 +209,24 @@ int		EngineController::initOpenGL()
 	return (0);
 }
 
+/*
+**	Initializing openCL context through GLFW with a special known technique.
+*/
+
+int		EngineController::initOpenCL()
+{
+	int ret;
+
+	ret = clGetPlatformIDs(1, &PlatformID, &RetNumPlatforms);
+	ret = clGetDeviceIDs(PlatformID, CL_DEVICE_TYPE_GPU, 1, &DeviceID, &RetNumDevices);
+
+	CGLContext = CGLGetCurrentContext();
+	ShareGroup = CGLGetShareGroup(CGLContext);
+	gcl_gl_set_sharegroup(ShareGroup);
+
+	return (0);
+}
+
 // --------------------------------------------------------------------	//
 //																		//
 //	Engine side drawing													//
@@ -228,9 +247,11 @@ void	EngineController::Draw()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		draw3DModels();
+		drawParticleObjects();
 		drawUIObjects();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		drawTextObjects();
+
 
 		// display on screen.
 		glfwSwapBuffers(Window);
@@ -325,6 +346,20 @@ void	EngineController::drawTextObjects()
 		if ((*it)->Visible == true)
 		{
 			renderGameTextObject(*it);
+		}
+	}
+}
+
+void	EngineController::drawParticleObjects()
+{
+	glUseProgram(MainShaderProgramme);
+	for (std::vector<ParticleObject *>::iterator it = ParticleObjectList.begin();
+		it != ParticleObjectList.end();
+		it++)
+	{
+		if ((*it)->Visible == true)
+		{
+			renderParticleObject(*it);
 		}
 	}
 }

@@ -54,10 +54,21 @@
 #  include <GLUT/glut.h>
 # else
 #  include <GL/gl3.h>
- // #  include <GL/gl.h>
+
+// #  include <GL/gl.h>
 #  include <GL/glu.h>
 #  include <GL/glew.h>
 # endif
+
+// Linking OpenCL
+# ifdef __APPLE__
+#  include <OpenCL/opencl.h>
+# else
+#  include <cl.h>
+# endif
+#include <OpenCL/cl_gl_ext.h>
+#include <OpenGL/CGLDevice.h>
+#include <OpenGL/CGLCurrent.h>
 
 // Freetype - font library
 # include <ft2build.h>
@@ -131,6 +142,7 @@ class				TextureComponent;
 class				GameObject;
 class				GameTextObject;
 class				GameUIObject;
+class				ParticleObject;
 
 // Main Controller
 class				TextureManager;
@@ -152,6 +164,7 @@ class				EngineController;
 # include "EngineObjects/GameObject.hpp"
 # include "EngineObjects/GameTextObject.hpp"
 # include "EngineObjects/GameUIObject.hpp"
+# include "EngineObjects/ParticleObject.hpp"
 
 # include "TextureManager.hpp"
 # include "EngineSettings.hpp"

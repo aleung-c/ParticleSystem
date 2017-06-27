@@ -217,3 +217,26 @@ void	EngineController::renderGameTextObject(GameTextObject *obj)
 	}
 	glDisableVertexAttribArray(0);
 }
+
+void		EngineController::renderParticleObject(ParticleObject	*obj)
+{
+	glUniform1i(glGetUniformLocation(MainShaderProgramme, "has_texture"), GL_FALSE);
+	// opengl buffer loading.
+	applyMatricesToParticleObject(obj);
+
+	// // ------ load vertex and draw them - LOCATION = 0
+	// // ----------- To display triangles from faces vertex
+	// glBindBuffer(GL_ARRAY_BUFFER, obj->GetFvbo());
+	// glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+	// glEnableVertexAttribArray(0);
+	// glDrawArrays(GL_TRIANGLES, 0, obj->GetNbFaceVertices());
+
+	// ----------- To display only points from vertex -> useful for debug.
+	glBindBuffer(GL_ARRAY_BUFFER, obj->GetVbo());
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(0);
+	glDrawArrays (GL_POINTS, 0, obj->ParticleNumber);
+
+	// ----- disable all after draw;
+	glDisableVertexAttribArray(0);
+}
