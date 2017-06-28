@@ -9,8 +9,15 @@ int		main(void)
 
 	std::cout << "Hello particle system!" << std::endl;
 	Engine->InitEngine(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME);
+	Engine->GetCamera()->Transform.Position.x = 0.0;
+	Engine->GetCamera()->Transform.Position.y = 0.0;
+	Engine->GetCamera()->Transform.Position.z = -5.0;
+	Engine->SetCameraLookAt(glm::vec3(0.0, 0.0, 0.0));
 
 	ParticleObject *particle = new ParticleObject(1000);
+	particle->Transform.Position.x = 0.0;
+	particle->Transform.Position.y = 0.0;
+	particle->Transform.Position.z = 0.0;
 
 	// GameObject *test_obj = new GameObject("test_obj", "./ressources/chair_1.obj");
 
@@ -91,6 +98,11 @@ int		main(void)
 	{
 		printf("Set CL kernel arg: %s\n", getCLErrorString(ret));
 	}
+	ret = clSetKernelArg(kernel, 1, sizeof(float *), (void *)&particle->Transform.Position);
+	if (ret != CL_SUCCESS)
+	{
+		printf("Set CL kernel arg: %s\n", getCLErrorString(ret));
+	}
 
 	/* Execute OpenCL Kernel */
 	// ret = clEnqueueTask(command_queue, kernel, 0, NULL, NULL);
@@ -107,16 +119,12 @@ int		main(void)
 	size_t	localWorkSize;
 
 	globalWorkSize = particle->ParticleNumber;
-	localWorkSize = 1;
+	localWorkSize = 10;
 	while (!glfwWindowShouldClose(Engine->Window))
 	{
 		glFinish();
 		clEnqueueAcquireGLObjects(command_queue, 1, &particle->ObjMem, 0, 0, 0);
 		// ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&particle->ObjMem);
-		if (ret != CL_SUCCESS)
-		{
-			printf("Set CL kernel arg: %s\n", getCLErrorString(ret));
-		}
 		clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &globalWorkSize,
 			&localWorkSize, 0, 0, 0);
 		clEnqueueReleaseGLObjects(command_queue, 1, &particle->ObjMem, 0, 0, 0);
