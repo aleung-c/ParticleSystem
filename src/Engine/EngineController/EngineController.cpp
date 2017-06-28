@@ -225,7 +225,7 @@ int		EngineController::initOpenCL()
 	ShareGroup = CGLGetShareGroup(CGLContext);
 	gcl_gl_set_sharegroup(ShareGroup);
 
-	// create he openCL context from the sharegroup.
+	// create he openCL context from the sharegroup. -> APPLE WAY.
 	cl_context_properties props[] =
 	{
 		CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,

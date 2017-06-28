@@ -21,9 +21,6 @@ int		main(void)
 
 	// GameObject *test_obj = new GameObject("test_obj", "./ressources/chair_1.obj");
 
-	if (particle)
-	{}
-
 	cl_int					ret;
 	cl_command_queue		command_queue = NULL;
 
