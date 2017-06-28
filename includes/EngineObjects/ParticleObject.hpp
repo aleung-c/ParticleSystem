@@ -9,7 +9,6 @@ class ParticleObject : public EngineObject
 		int				ParticleNumber;
 
 		cl_mem			ObjMem;
-		std::vector<glm::vec4> pos; // 
 
 	private:
 		void initParticleObject();

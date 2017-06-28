@@ -86,13 +86,13 @@ class	EngineController
 
 		// ----- OpenCL variables
 		// gl cl sharing.
+		cl_context							Context;
 		CGLContextObj						CGLContext;
 		CGLShareGroupObj					ShareGroup;
 
 		// cl default variables.
 		cl_platform_id						PlatformID;
 		cl_device_id						DeviceID;
-		// cl_context							Context;
 		cl_command_queue					CommandQueue;
 		cl_program							Program;
 		cl_kernel							Kernel;

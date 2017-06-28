@@ -48,10 +48,9 @@ void	ParticleObject::initParticleObject()
 	// 	z += 0.1;
 	// }
 
-	float zero;
+	float	zero;
 
 	zero = 0.0;
-
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	glBufferData(GL_ARRAY_BUFFER, ParticleNumber * sizeof(glm::vec4), NULL,
 					GL_STATIC_DRAW);
@@ -59,5 +58,12 @@ void	ParticleObject::initParticleObject()
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(0);
 
-	ObjMem = (cl_mem)gcl_gl_create_ptr_from_buffer(_vbo);
+	// ObjMem = (cl_mem)gcl_gl_create_ptr_from_buffer(_vbo);
+	int ret;
+	ObjMem = clCreateFromGLBuffer(EngineController::Instance().Context, CL_MEM_WRITE_ONLY,
+		_vbo, &ret);
+	if (ret != CL_SUCCESS)
+	{
+		printf("clCreateFromGLBuffer: %s\n", getCLErrorString(ret));
+	}
 }

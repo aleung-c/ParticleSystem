@@ -220,10 +220,20 @@ int		EngineController::initOpenCL()
 	ret = clGetPlatformIDs(1, &PlatformID, &RetNumPlatforms);
 	ret = clGetDeviceIDs(PlatformID, CL_DEVICE_TYPE_GPU, 1, &DeviceID, &RetNumDevices);
 
+	// create GL sharegroup for the open CL context.
 	CGLContext = CGLGetCurrentContext();
 	ShareGroup = CGLGetShareGroup(CGLContext);
 	gcl_gl_set_sharegroup(ShareGroup);
 
+	// create he openCL context from the sharegroup.
+	cl_context_properties props[] =
+	{
+		CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,
+		(cl_context_properties) ShareGroup,
+		CL_CONTEXT_PLATFORM,
+		(cl_context_properties) PlatformID, 0
+	};
+	Context = clCreateContext(props, 1, &DeviceID, NULL, NULL, NULL); 
 	return (0);
 }
 
@@ -231,7 +241,7 @@ int		EngineController::initOpenCL()
 //																		//
 //	Engine side drawing													//
 //	To see each object rendering in detail,								//
-//	look at EngineController_rendering.cpp							//
+//	look at EngineController_rendering.cpp								//
 //																		//
 // --------------------------------------------------------------------	//
 
@@ -251,7 +261,6 @@ void	EngineController::Draw()
 		drawUIObjects();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		drawTextObjects();
-
 
 		// display on screen.
 		glfwSwapBuffers(Window);

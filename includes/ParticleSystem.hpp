@@ -66,9 +66,14 @@
 # else
 #  include <cl.h>
 # endif
-#include <OpenCL/cl_gl_ext.h>
-#include <OpenGL/CGLDevice.h>
-#include <OpenGL/CGLCurrent.h>
+
+# include <OpenCL/cl_gl.h>
+# include <OpenCL/cl_gl_ext.h>
+# include <OpenGL/CGLDevice.h>
+# include <OpenGL/CGLCurrent.h>
+
+# define CL_GL_CONTEXT_KHR 0x2008
+# define CL_WGL_HDC_KHR 0x200B
 
 // Freetype - font library
 # include <ft2build.h>
@@ -148,6 +153,8 @@ class				ParticleObject;
 class				TextureManager;
 class				EngineSettings;
 class				EngineController;
+
+const char *getCLErrorString(cl_int error);
 
 // file includes - order matters.
 
