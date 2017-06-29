@@ -84,21 +84,9 @@ class	EngineController
 		// map of asciis 128 characters.
 		std::map<GLchar, Character>			Characters;
 
-		// ----- OpenCL variables
-		// gl cl sharing.
-		cl_context							Context;
-		CGLContextObj						CGLContext;
-		CGLShareGroupObj					ShareGroup;
+		// ----- OpenCL component
+		OpenCLComponent						CLController;
 
-		// cl default variables.
-		cl_platform_id						PlatformID;
-		cl_device_id						DeviceID;
-		cl_command_queue					CommandQueue;
-		cl_program							Program;
-		cl_kernel							Kernel;
-
-		cl_uint								RetNumDevices;
-		cl_uint								RetNumPlatforms;
 
 		// ----- Public Engine's methods.
 		EngineController();
@@ -118,10 +106,8 @@ class	EngineController
 
 	private:
 		// ----- Initialization methods.
-			
 		int									initGLFW();
 		int									initOpenGL();
-		int									initOpenCL();
 		int									initFreeType();
 		void								loadFreeTypesCharacters();
 

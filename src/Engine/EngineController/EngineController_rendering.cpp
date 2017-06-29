@@ -231,7 +231,7 @@ void		EngineController::renderParticleObject(ParticleObject	*obj)
 	// glEnableVertexAttribArray(0);
 	// glDrawArrays(GL_TRIANGLES, 0, obj->GetNbFaceVertices());
 
-	// ----------- To display only points from vertex -> useful for debug.
+	// ----------- To display only points from vertex -> useful for particles.
 	glBindBuffer(GL_ARRAY_BUFFER, obj->GetVbo());
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(0);

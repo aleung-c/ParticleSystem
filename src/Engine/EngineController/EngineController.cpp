@@ -66,8 +66,7 @@ void		EngineController::InitEngine(int windowWidth, int windowHeight, std::strin
 	WindowName = windowName;
 	if (initGLFW() == -1
 		|| initOpenGL() == -1
-		|| initFreeType() == -1
-		|| initOpenCL())
+		|| initFreeType() == -1)
 	{
 		std::cout << "Fatal error: Initialization error. Exiting..." << std::endl;
 		exit (-1);
@@ -209,33 +208,7 @@ int		EngineController::initOpenGL()
 	return (0);
 }
 
-/*
-**	Initializing openCL context through GLFW with a special known technique.
-*/
 
-int		EngineController::initOpenCL()
-{
-	int ret;
-
-	ret = clGetPlatformIDs(1, &PlatformID, &RetNumPlatforms);
-	ret = clGetDeviceIDs(PlatformID, CL_DEVICE_TYPE_GPU, 1, &DeviceID, &RetNumDevices);
-
-	// create GL sharegroup for the open CL context.
-	CGLContext = CGLGetCurrentContext();
-	ShareGroup = CGLGetShareGroup(CGLContext);
-	gcl_gl_set_sharegroup(ShareGroup);
-
-	// create he openCL context from the sharegroup. -> APPLE WAY.
-	cl_context_properties props[] =
-	{
-		CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE,
-		(cl_context_properties) ShareGroup,
-		CL_CONTEXT_PLATFORM,
-		(cl_context_properties) PlatformID, 0
-	};
-	Context = clCreateContext(props, 1, &DeviceID, NULL, NULL, NULL); 
-	return (0);
-}
 
 // --------------------------------------------------------------------	//
 //																		//

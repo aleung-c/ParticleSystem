@@ -72,6 +72,10 @@
 # include <OpenGL/CGLDevice.h>
 # include <OpenGL/CGLCurrent.h>
 
+# ifdef _WIN32
+#  include <windows.h>
+# endif
+
 # define CL_GL_CONTEXT_KHR 0x2008
 # define CL_WGL_HDC_KHR 0x200B
 
@@ -88,6 +92,9 @@
 # define WINDOW_WIDTH 1280
 # define WINDOW_HEIGHT 1080
 # define WINDOW_NAME "aleung-c's Particle System"
+
+#define MEM_SIZE (128)
+#define MAX_SOURCE_SIZE (0x100000)
 
 /*
 **	Objects type handled by the engine.
@@ -123,7 +130,8 @@ typedef struct						s_bmp_texture
 **	Thanks to Joey de Vries from https://learnopengl.com/#!In-Practice/Text-Rendering
 */
 
-struct Character {
+struct Character
+{
 	GLuint			TextureID;  // ID handle of the glyph texture
 	glm::ivec2		Size;       // Size of glyph
 	glm::ivec2		Bearing;    // Offset from baseline to left/top of glyph
@@ -152,9 +160,9 @@ class				ParticleObject;
 // Main Controller
 class				TextureManager;
 class				EngineSettings;
-class				EngineController;
+class				OpenCLComponent;
 
-const char *getCLErrorString(cl_int error);
+class				EngineController;
 
 // file includes - order matters.
 
@@ -176,6 +184,7 @@ const char *getCLErrorString(cl_int error);
 # include "TextureManager.hpp"
 # include "EngineSettings.hpp"
 
+# include "OpenCLComponent.hpp"
 # include "EngineController.hpp"
 
 # endif

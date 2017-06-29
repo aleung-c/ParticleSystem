@@ -60,10 +60,11 @@ void	ParticleObject::initParticleObject()
 
 	// ObjMem = (cl_mem)gcl_gl_create_ptr_from_buffer(_vbo);
 	int ret;
-	ObjMem = clCreateFromGLBuffer(EngineController::Instance().Context, CL_MEM_WRITE_ONLY,
+	ObjMem = clCreateFromGLBuffer(EngineController::Instance().CLController.Context, CL_MEM_WRITE_ONLY,
 		_vbo, &ret);
 	if (ret != CL_SUCCESS)
 	{
-		printf("clCreateFromGLBuffer: %s\n", getCLErrorString(ret));
+		printf("clCreateFromGLBuffer: %s\n",
+			EngineController::Instance().CLController.GetCLErrorString(ret));
 	}
 }

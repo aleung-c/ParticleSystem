@@ -2,6 +2,7 @@ NAME = ParticleSystem
 
 SRC = ./src/main.cpp \
 ./src/Engine/EngineController/EngineController.cpp \
+./src/Engine/EngineController/OpenCLComponent.cpp \
 ./src/Engine/EngineController/EngineController_freetype_font.cpp \
 ./src/Engine/EngineController/EngineController_parsing.cpp \
 ./src/Engine/EngineController/EngineController_shaders.cpp \
