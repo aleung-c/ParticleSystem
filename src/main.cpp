@@ -18,21 +18,17 @@ int		main(void)
 	Engine->CLController.LoadKernel("./kernels/particles_position.cl");
 	Engine->CLController.BuildProgram("place_particles");
 
+	// Initializing Scene.
 	ParticleObject *particle = new ParticleObject(1000);
 	particle->Transform.Position.x = 0.0;
 	particle->Transform.Position.y = 0.0;
 	particle->Transform.Position.z = 0.0;
 
-	int ret;
-
 	/* Set OpenCL Kernel Parameters */
-	ret = clSetKernelArg(Engine->CLController.Kernel, 0, sizeof(cl_mem), (void *)&particle->ObjMem);
-	if (ret != CL_SUCCESS)
-		printf("Set CL kernel arg: %s\n", Engine->CLController.GetCLErrorString(ret));
-	ret = clSetKernelArg(Engine->CLController.Kernel, 1, sizeof(float *), (void *)&particle->Transform.Position);
-	if (ret != CL_SUCCESS)
-		printf("Set CL kernel arg: %s\n", Engine->CLController.GetCLErrorString(ret));
+	Engine->CLController.SetKernelArg(0, sizeof(cl_mem), (void *)&particle->ObjMem);
+	Engine->CLController.SetKernelArg(1, sizeof(float *), (void *)&particle->Transform.Position);
 
+	/* Execute the kernel, as of now in NDRange -> data parallelism. */
 	Engine->CLController.ExecuteParticleKernel(particle);
 
 	Engine->CheckForOpenGLErrors();

@@ -95,11 +95,13 @@ void				OpenCLComponent::BuildProgram(std::string functionName)
 		if (ret == CL_BUILD_PROGRAM_FAILURE)
 		{
 			// Determine the size of the log
-			size_t log_size;
+			size_t		log_size;
 
 			clGetProgramBuildInfo(Program, DeviceID, CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
+
 			// Allocate memory for the log
-			char *log = (char *) malloc(log_size);
+			char		*log = (char *) malloc(log_size);
+
 			// Get the log
 			clGetProgramBuildInfo(Program, DeviceID, CL_PROGRAM_BUILD_LOG, log_size, log, NULL);
 			printf("%s\n", log);
@@ -111,6 +113,16 @@ void				OpenCLComponent::BuildProgram(std::string functionName)
 	{
 		printf("Create CL kernel: %s\n", GetCLErrorString(ret));
 		exit(-1);
+	}
+}
+
+void			OpenCLComponent::SetKernelArg(int arg_index, size_t size, void *ptr)
+{
+	ret = clSetKernelArg(Kernel, arg_index, size, ptr);
+	if (ret != CL_SUCCESS)
+	{
+		printf("Set CL kernel arg: %s\n", GetCLErrorString(ret));
+		exit (-1);
 	}
 }
 

@@ -26,6 +26,7 @@ class OpenCLComponent
 		int							InitOpenCL();
 		void						LoadKernel(std::string pathName);
 		void						BuildProgram(std::string functionName);
+		void						SetKernelArg(int arg_index, size_t size, void *ptr);
 		void						ExecuteParticleKernel(ParticleObject *particle);
 		const char					*GetCLErrorString(cl_int error);
 
