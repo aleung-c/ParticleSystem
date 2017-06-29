@@ -132,37 +132,51 @@ typedef struct						s_bmp_texture
 
 struct Character
 {
-	GLuint			TextureID;  // ID handle of the glyph texture
-	glm::ivec2		Size;       // Size of glyph
-	glm::ivec2		Bearing;    // Offset from baseline to left/top of glyph
-	GLuint			Advance;    // Offset to advance to next glyph
+	GLuint				TextureID;  // ID handle of the glyph texture
+	glm::ivec2			Size;       // Size of glyph
+	glm::ivec2			Bearing;    // Offset from baseline to left/top of glyph
+	GLuint				Advance;    // Offset to advance to next glyph
 };
+
+
 
 /*
 **	Class forward declarations
 */
 
 // Engine mother Object class;
-class				EngineObject;
+class					EngineObject;
 
 // Objects' components
-class				TransformComponent;
-class				BoundingBoxComponent;
-class				TextureComponent;
+class					TransformComponent;
+class					BoundingBoxComponent;
+class					TextureComponent;
 
 
 // Main objects
-class				GameObject;
-class				GameTextObject;
-class				GameUIObject;
-class				ParticleObject;
+class					GameObject;
+class					GameTextObject;
+class					GameUIObject;
+class					ParticleObject;
 
 // Main Controller
-class				TextureManager;
-class				EngineSettings;
-class				OpenCLComponent;
+class					TextureManager;
+class					EngineSettings;
+class					OpenCLComponent;
 
-class				EngineController;
+class					EngineController;
+
+typedef struct			s_ParticleSystemDatas
+{
+	ParticleObject		*Particle;
+
+	double				GravityPoint_x;
+	double				GravityPoint_y;
+
+	double				Cursor_x;
+	double				Cursor_y;
+
+}						t_ParticleSystemDatas;
 
 // file includes - order matters.
 
@@ -186,5 +200,23 @@ class				EngineController;
 
 # include "OpenCLComponent.hpp"
 # include "EngineController.hpp"
+
+/*
+**	C style function prototypes.
+*/
+
+void					ParticleSystem_Init(EngineController *engine, t_ParticleSystemDatas *PSDatas);
+void					ParticleSystem_SceneInit(EngineController *engine, t_ParticleSystemDatas *PSDatas);
+void					PositionParticlesRandomly(EngineController *engine, t_ParticleSystemDatas *PSDatas);
+
+void					PrepareParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *PSDatas);
+
+void					ParticleSystem_MainLoop(EngineController *engine, t_ParticleSystemDatas *PSDatas);
+
+void					ParticleSystem_MemoryClean(EngineController *engine, t_ParticleSystemDatas *PSDatas);
+
+double					GetRandomDouble(double min, double max);
+
+void					KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 # endif

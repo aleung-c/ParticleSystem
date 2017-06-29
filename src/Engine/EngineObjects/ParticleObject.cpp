@@ -1,8 +1,9 @@
 #include "../../../includes/ParticleSystem.hpp"
 
-ParticleObject::ParticleObject(int particleNumber)
+ParticleObject::ParticleObject(int particleNumber, float rad)
 {
 	ParticleNumber = particleNumber;
+	Radius = rad;
 	Visible = true;
 	initParticleObject();
 	EngineController::Instance().ParticleObjectList.push_back(this);
@@ -10,7 +11,7 @@ ParticleObject::ParticleObject(int particleNumber)
 
 ParticleObject::~ParticleObject()
 {
-
+	clReleaseMemObject(ObjMem);
 }
 
 /*

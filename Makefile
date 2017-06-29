@@ -1,6 +1,12 @@
 NAME = ParticleSystem
 
 SRC = ./src/main.cpp \
+./src/ParticleSystem_Events.cpp \
+./src/ParticleSystem_Animation.cpp \
+./src/ParticleSystem_Init.cpp \
+./src/ParticleSystem_MainLoop.cpp \
+./src/ParticleSystem_MemoryClean.cpp \
+./src/Tools.cpp \
 ./src/Engine/EngineController/EngineController.cpp \
 ./src/Engine/EngineController/OpenCLComponent.cpp \
 ./src/Engine/EngineController/EngineController_freetype_font.cpp \

@@ -3,10 +3,11 @@
 class ParticleObject : public EngineObject
 {
 	public:
-		ParticleObject(int particleNumber);
+		ParticleObject(int particleNumber, float rad);
 		~ParticleObject();
 	
 		int				ParticleNumber;
+		float			Radius;
 
 		cl_mem			ObjMem;
 

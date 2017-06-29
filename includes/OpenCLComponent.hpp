@@ -21,16 +21,19 @@ class OpenCLComponent
 		cl_uint						RetNumDevices;
 		cl_uint						RetNumPlatforms;
 
-		cl_kernel					Kernel;
+		std::vector<cl_kernel>		Kernels;
 
 		int							InitOpenCL();
-		void						LoadKernel(std::string pathName);
-		void						BuildProgram(std::string functionName);
-		void						SetKernelArg(int arg_index, size_t size, void *ptr);
-		void						ExecuteParticleKernel(ParticleObject *particle);
+		void						LoadKernelFile(std::string pathName);
+		void						BuildProgram();
+		int							CreateKernel(std::string functionName);
+		void						SetKernelArg(int kernelSlot, int arg_index, size_t size, void *ptr);
+		void						ExecuteParticleKernel(int kernelSlot, ParticleObject *particle);
+		void						CleanMemory();
 		const char					*GetCLErrorString(cl_int error);
 
 	private:
+		int							nbKernels;
 		cl_int						ret;
 
 		FILE						*fp;

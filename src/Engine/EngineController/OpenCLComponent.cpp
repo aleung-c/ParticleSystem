@@ -4,7 +4,8 @@ OpenCLComponent::OpenCLComponent()
 {
 	CommandQueue = NULL;
 	Program = NULL;
-	Kernel = NULL;
+	source_str = NULL;
+	nbKernels = 0;
 }
 
 OpenCLComponent::~OpenCLComponent()
@@ -62,9 +63,15 @@ int				OpenCLComponent::InitOpenCL()
 	return (0);
 }
 
-void				OpenCLComponent::LoadKernel(std::string pathName)
+/*
+**	Here, ill load the file with the kernel code.
+*/
+
+void			OpenCLComponent::LoadKernelFile(std::string pathName)
 {
 	/* Load the source code containing the kernel*/
+	if (source_str)
+		free(source_str);
 	fp = fopen(pathName.c_str(), "r");
 	if (!fp)
 	{
@@ -76,7 +83,11 @@ void				OpenCLComponent::LoadKernel(std::string pathName)
 	fclose(fp);
 }
 
-void				OpenCLComponent::BuildProgram(std::string functionName)
+/*
+**	Here, ill build the current program taken from LoadKernelFile
+*/
+
+void			OpenCLComponent::BuildProgram()
 {
 	/* Create Kernel Program from the source */
 	Program = clCreateProgramWithSource(Context, 1,
@@ -96,29 +107,42 @@ void				OpenCLComponent::BuildProgram(std::string functionName)
 		{
 			// Determine the size of the log
 			size_t		log_size;
-
 			clGetProgramBuildInfo(Program, DeviceID, CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
 
-			// Allocate memory for the log
+			// Allocate and get memory for the log
 			char		*log = (char *) malloc(log_size);
-
-			// Get the log
 			clGetProgramBuildInfo(Program, DeviceID, CL_PROGRAM_BUILD_LOG, log_size, log, NULL);
 			printf("%s\n", log);
 		}
 	}
+}
+
+/*
+**	Then, ill create a kernel. There can be several kernels, so i made a slot system.
+**	This method sends back the slot number of the kernel;
+*/
+
+int				OpenCLComponent::CreateKernel(std::string functionName)
+{
 	/* Create OpenCL Kernel */
-	Kernel = clCreateKernel(Program, functionName.c_str(), &ret); // <-- Function name in kernel !!
+	Kernels.push_back(clCreateKernel(Program, functionName.c_str(), &ret)); // <-- Function name in kernel !!
+	nbKernels += 1;
 	if (ret != CL_SUCCESS)
 	{
 		printf("Create CL kernel: %s\n", GetCLErrorString(ret));
 		exit(-1);
 	}
+	return (nbKernels - 1);
 }
 
-void			OpenCLComponent::SetKernelArg(int arg_index, size_t size, void *ptr)
+void			OpenCLComponent::SetKernelArg(int kernelSlot, int arg_index, size_t size, void *ptr)
 {
-	ret = clSetKernelArg(Kernel, arg_index, size, ptr);
+	if (kernelSlot >= nbKernels)
+	{
+		printf("Asked Kernel not created\n");
+		return ;
+	}
+	ret = clSetKernelArg(Kernels[kernelSlot], arg_index, size, ptr);
 	if (ret != CL_SUCCESS)
 	{
 		printf("Set CL kernel arg: %s\n", GetCLErrorString(ret));
@@ -126,7 +150,7 @@ void			OpenCLComponent::SetKernelArg(int arg_index, size_t size, void *ptr)
 	}
 }
 
-void			OpenCLComponent::ExecuteParticleKernel(ParticleObject *particle)
+void			OpenCLComponent::ExecuteParticleKernel(int kernelSlot, ParticleObject *particle)
 {
 	size_t				globalWorkSize;
 	size_t				localWorkSize;
@@ -137,12 +161,29 @@ void			OpenCLComponent::ExecuteParticleKernel(ParticleObject *particle)
 	glFinish();
 	clEnqueueAcquireGLObjects(CommandQueue, 1, &particle->ObjMem, 0, 0, 0);
 	// ret = clSetKernelArg(Kernel, 0, sizeof(cl_mem), (void *)&particle->ObjMem);
-	clEnqueueNDRangeKernel(CommandQueue, Kernel, 1, NULL, &globalWorkSize,
+	clEnqueueNDRangeKernel(CommandQueue, Kernels[kernelSlot], 1, NULL, &globalWorkSize,
 		&localWorkSize, 0, 0, 0);
 	clEnqueueReleaseGLObjects(CommandQueue, 1, &particle->ObjMem, 0, 0, 0);
 	clFinish(CommandQueue);
 }
 
+void			OpenCLComponent::CleanMemory()
+{
+	int		ret;
+
+	ret = clFlush(CommandQueue);
+	ret = clFinish(CommandQueue);
+	for (std::vector<cl_kernel>::iterator it = Kernels.begin(); it != Kernels.end(); it++)
+	{
+		ret = clReleaseKernel(*it);
+	}
+	ret = clReleaseProgram(Program);
+	ret = clReleaseCommandQueue(CommandQueue);
+	ret = clReleaseContext(Context);
+
+	if (source_str)
+		free(source_str);
+}
 
 const char		*OpenCLComponent::GetCLErrorString(cl_int error)
 {
