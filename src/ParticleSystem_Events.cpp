@@ -9,7 +9,6 @@ void	KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	(void)action;
 	(void)mods;
 	PSDatas = (t_ParticleSystemDatas *)glfwGetWindowUserPointer(window);
-
 	if (action == GLFW_PRESS)
 	{
 

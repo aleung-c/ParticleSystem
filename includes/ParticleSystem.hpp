@@ -175,6 +175,7 @@ typedef struct			s_ParticleSystemDatas
 
 	double				Cursor_x;
 	double				Cursor_y;
+	// float				Cursor_pos[4];
 
 }						t_ParticleSystemDatas;
 
@@ -210,6 +211,7 @@ void					ParticleSystem_SceneInit(EngineController *engine, t_ParticleSystemData
 void					PositionParticlesRandomly(EngineController *engine, t_ParticleSystemDatas *PSDatas);
 
 void					PrepareParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *PSDatas);
+void					UpdateParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *PSDatas);
 
 void					ParticleSystem_MainLoop(EngineController *engine, t_ParticleSystemDatas *PSDatas);
 

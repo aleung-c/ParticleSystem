@@ -15,7 +15,7 @@ void		ParticleSystem_Init(EngineController *engine, t_ParticleSystemDatas *PSDat
 	engine->CLController.LoadKernelFile("./kernels/particles_position.cl");
 	engine->CLController.BuildProgram();
 	engine->CLController.CreateKernel("place_particles"); // kernel slot 0
-	engine->CLController.CreateKernel("animate_particles"); // kernel slot 1
+	
 
 	// Init Events
 	glfwSetWindowUserPointer(engine->Window, (void *)PSDatas);
