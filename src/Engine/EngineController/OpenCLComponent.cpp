@@ -156,7 +156,7 @@ void			OpenCLComponent::ExecuteParticleKernel(int kernelSlot, ParticleObject *pa
 	size_t				localWorkSize;
 
 	globalWorkSize = particle->ParticleNumber;
-	localWorkSize = 10;
+	localWorkSize = 100;
 
 	glFinish();
 	clEnqueueAcquireGLObjects(CommandQueue, 1, &particle->ObjMem, 0, 0, 0);

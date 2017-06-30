@@ -17,7 +17,6 @@ void		ParticleSystem_Init(EngineController *engine, t_ParticleSystemDatas *PSDat
 	engine->CLController.CreateKernel("place_particles_cubic"); // kernel slot 0
 	engine->CLController.CreateKernel("place_particles_spheric"); // kernel slot 1
 	engine->CLController.CreateKernel("animate_particles"); // kernel slot 2
-	// engine->CLController.CreateKernel("update_distance"); // kernel slot 3
 
 	// Init Events
 	glfwSetWindowUserPointer(engine->Window, (void *)PSDatas);
@@ -34,8 +33,8 @@ void		ParticleSystem_Init(EngineController *engine, t_ParticleSystemDatas *PSDat
 void		ParticleSystem_SceneInit(EngineController *engine, t_ParticleSystemDatas *PSDatas)
 {
 	// Setting the main particle object.
-	PSDatas->Particle = new ParticleObject(100000, 10.0);
-	PSDatas->Particle->Speed = 0.1;
+	PSDatas->Particle = new ParticleObject(100000, 20.0);
+	PSDatas->Particle->Speed = 0.05;
 	PSDatas->Particle->Transform.Position.x = 0.0;
 	PSDatas->Particle->Transform.Position.y = 0.0;
 	PSDatas->Particle->Transform.Position.z = 0.0;
