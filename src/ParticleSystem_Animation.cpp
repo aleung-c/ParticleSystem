@@ -14,27 +14,15 @@ void		PrepareParticlesAnimation(EngineController *engine, t_ParticleSystemDatas 
 	// engine->CLController.SetKernelArg(1, 3, sizeof(double *), (void *)&randsuite_ObjMem);
 }
 
+// TODO : FIX mouse precision.
 void		UpdateParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *PSDatas)
 {
 	float		fCursor_x;
 	float		fCursor_y;
 
-	// float		cursorWorldSpace_x;
-	// float		cursorWorldSpace_y;
-	//	float		CursorWorldSpace_z;
-
-	// engine->CLController.SetKernelArg(1, 0, sizeof(cl_mem), (void *)&PSDatas->Particle->ObjMem);
-	// engine->CLController.SetKernelArg(1, 1, sizeof(float *), (void *)&PSDatas->Particle->Transform.Position);
-	// engine->CLController.SetKernelArg(1, 2, sizeof(float), (void *)&PSDatas->Particle->Radius);
-	// engine->CLController.SetKernelArg(1, 3, sizeof(float), (void *)&PSDatas->Particle->Speed);
-
 	// send mouse position flat for now.
 	fCursor_x = (float)PSDatas->Cursor_x;
 	fCursor_y = (float)PSDatas->Cursor_y;
-
-	// translate screen pos to world pos flatly (x y reversed from glflw to opengl space);
-	// cursorWorldSpace_x = -(fCursor_x - (WINDOW_WIDTH / 2));
-	// cursorWorldSpace_y = -(fCursor_y - (WINDOW_HEIGHT / 2));
 
 	// screen to world pos projected
 	glm::mat4 	mouse_projection_mat;

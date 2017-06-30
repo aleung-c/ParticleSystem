@@ -7,7 +7,7 @@ void		ParticleSystem_Init(EngineController *engine, t_ParticleSystemDatas *PSDat
 	engine->InitEngine(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_NAME);
 	engine->GetCamera()->Transform.Position.x = 0.0;
 	engine->GetCamera()->Transform.Position.y = 0.0;
-	engine->GetCamera()->Transform.Position.z = -10.0;
+	engine->GetCamera()->Transform.Position.z = -50.0;
 	engine->SetCameraLookAt(glm::vec3(0.0, 0.0, 0.0));
 
 	// Initializing OPENCL COMPONENTS and kernels.
@@ -89,7 +89,7 @@ void		PositionParticlesRandomly(EngineController *engine, t_ParticleSystemDatas 
 	engine->CLController.SetKernelArg(1, 3, sizeof(double *), (void *)&PSDatas->Randsuite_ObjMem);
 
 	/* Execute the kernel, as of now in NDRange -> data parallelism. */
-	engine->CLController.ExecuteParticleKernel(0, PSDatas->Particle);
+	engine->CLController.ExecuteParticleKernel(1, PSDatas->Particle);
 }
 
 

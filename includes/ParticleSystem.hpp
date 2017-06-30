@@ -90,7 +90,7 @@
 # define TEXTUREMIPMAP_DEFAULT 2
 # define ANTIALIASING_DEFAULT 2
 # define WINDOW_WIDTH 1280
-# define WINDOW_HEIGHT 1080
+# define WINDOW_HEIGHT 720
 # define WINDOW_NAME "aleung-c's Particle System"
 
 #define MEM_SIZE (128)

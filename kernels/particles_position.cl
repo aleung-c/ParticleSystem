@@ -2,34 +2,57 @@ __kernel void	place_particles_cubic(__global float4 *vertices, __global float4 *
 								float radius, __global double *rand_suite)
 {
 	int			base;
-	float		new_x_value;
-	float		new_y_value;
-	float		new_z_value;
+	float3		new_pos;
 
 	base = get_global_id(0);
-	// cubic placement.
-	new_x_value = 0.0 - rand_suite[base];
-	new_y_value = 0.0 - rand_suite[base + 1];
-	new_z_value = 0.0 - rand_suite[base + 2];
 
-	vertices[base] =  (float4)(new_x_value, new_y_value, new_z_value, 1.0f);
+	// cubic placement.
+	new_pos.x = 0.0 - rand_suite[base];
+	new_pos.y = 0.0 - rand_suite[base + 1];
+	new_pos.z = 0.0 - rand_suite[base + 2];
+
+	vertices[base] =  (float4)(new_pos.x, new_pos.y, new_pos.z, 1.0f);
 }
+
+/*
+**	Placing the particle in a sphere with a bad method: i just put back the points that 
+**	are not in the sphere, with a vector displacement.
+*/
 
 __kernel void	place_particles_spheric(__global float4 *vertices, __global float4 *origine,
 								float radius, __global double *rand_suite)
 {
 	int			base;
-	float		new_x_value;
-	float		new_y_value;
-	float		new_z_value;
+	float3		new_pos;
+	float3		replace_sphere;
+	float		rvals;
 
 	base = get_global_id(0);
-	// cubic placement.
-	new_x_value = 0.0 - rand_suite[base + 3];
-	new_y_value = 0.0 - rand_suite[base + 4];
-	new_z_value = 0.0 - rand_suite[base + 5];
 
-	vertices[base] =  (float4)(new_x_value, new_y_value, new_z_value, 1.0f);
+	new_pos.x = 0.0 - rand_suite[base];
+	new_pos.y = 0.0 - rand_suite[base + 1];
+	new_pos.z = 0.0 - rand_suite[base + 2];
+
+	replace_sphere.x = 0.0;
+	replace_sphere.y = 0.0;
+	replace_sphere.z = 0.0;
+
+	// IF point is NOT IN SPHERE
+	if (pow(new_pos.x - 0.0, 2) + pow(new_pos.y - 0.0, 2) + pow(new_pos.z - 0.0, 2) > pow(radius, 2))
+	{
+		// move the point in the opposite dirrection.
+		new_pos = new_pos + normalize(replace_sphere - new_pos) * radius;
+	}
+
+	// new_pos.x = 2.0 * M_PI * rand_suite[base];
+	// new_pos.x = acos(new_pos.x);
+	// rvals = 2.0 * rand_suite[base + 1] - 1.0;
+	// new_pos.y = asin(rvals);
+	// new_pos.z = 3.0 * dot(rand_suite[base + 2], 1.0 / radius);
+
+
+
+	vertices[base] =  (float4)(new_pos.x, new_pos.y, new_pos.z, 1.0f);
 }
 
 __kernel void	animate_particles(__global float4 *vertices, __global double *rand_suite,
