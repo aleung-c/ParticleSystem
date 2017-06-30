@@ -17,6 +17,7 @@ void		ParticleSystem_Init(EngineController *engine, t_ParticleSystemDatas *PSDat
 	engine->CLController.CreateKernel("place_particles_cubic"); // kernel slot 0
 	engine->CLController.CreateKernel("place_particles_spheric"); // kernel slot 1
 	engine->CLController.CreateKernel("animate_particles"); // kernel slot 2
+	// engine->CLController.CreateKernel("update_distance"); // kernel slot 3
 
 	// Init Events
 	glfwSetWindowUserPointer(engine->Window, (void *)PSDatas);
@@ -80,16 +81,16 @@ void		PositionParticlesRandomly(EngineController *engine, t_ParticleSystemDatas 
 	engine->CLController.SetKernelArg(0, 0, sizeof(cl_mem), (void *)&PSDatas->Particle->ObjMem);
 	engine->CLController.SetKernelArg(0, 1, sizeof(float *), (void *)&PSDatas->Particle->Transform.Position);
 	engine->CLController.SetKernelArg(0, 2, sizeof(float), (void *)&PSDatas->Particle->Radius); // !! beware of this syntax.
-	engine->CLController.SetKernelArg(0, 3, sizeof(double *), (void *)&PSDatas->Randsuite_ObjMem);
+	engine->CLController.SetKernelArg(0, 3, sizeof(cl_mem), (void *)&PSDatas->Randsuite_ObjMem);
 
 	/* Set OpenCL Kernel Parameters for sphere as well */
 	engine->CLController.SetKernelArg(1, 0, sizeof(cl_mem), (void *)&PSDatas->Particle->ObjMem);
 	engine->CLController.SetKernelArg(1, 1, sizeof(float *), (void *)&PSDatas->Particle->Transform.Position);
 	engine->CLController.SetKernelArg(1, 2, sizeof(float), (void *)&PSDatas->Particle->Radius); // !! beware of this syntax.
-	engine->CLController.SetKernelArg(1, 3, sizeof(double *), (void *)&PSDatas->Randsuite_ObjMem);
+	engine->CLController.SetKernelArg(1, 3, sizeof(cl_mem), (void *)&PSDatas->Randsuite_ObjMem);
 
 	/* Execute the kernel, as of now in NDRange -> data parallelism. */
-	engine->CLController.ExecuteParticleKernel(1, PSDatas->Particle);
+	engine->CLController.ExecuteParticleKernel(0, PSDatas->Particle);
 }
 
 

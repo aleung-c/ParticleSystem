@@ -94,7 +94,7 @@
 # define WINDOW_NAME "aleung-c's Particle System"
 
 #define MEM_SIZE (128)
-#define MAX_SOURCE_SIZE (0x100000)
+#define MAX_SOURCE_SIZE 50000
 
 /*
 **	Objects type handled by the engine.

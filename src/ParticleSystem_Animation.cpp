@@ -12,6 +12,10 @@ void		PrepareParticlesAnimation(EngineController *engine, t_ParticleSystemDatas 
 	engine->CLController.SetKernelArg(2, 3, sizeof(float), (void *)&PSDatas->Particle->Radius);
 	engine->CLController.SetKernelArg(2, 4, sizeof(float), (void *)&PSDatas->Particle->Speed);
 	// engine->CLController.SetKernelArg(1, 3, sizeof(double *), (void *)&randsuite_ObjMem);
+
+	// param for distance update index 3
+	// engine->CLController.SetKernelArg(3, 0, sizeof(cl_mem), (void *)&PSDatas->Particle->ObjMem);
+	// engine->CLController.SetKernelArg(3, 1, sizeof(cl_mem), (void *)&PSDatas->Particle->Distance_ObjMem);
 }
 
 // TODO : FIX mouse precision.
@@ -47,13 +51,13 @@ void		UpdateParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *
 	screenPos.y *= screenPos.w;
 	screenPos.z *= screenPos.w;
 
-	printf("in screenpos = %fx %fy %fz\n", screenPos.x, screenPos.y, screenPos.z);
+	// printf("in screenpos = %fx %fy %fz\n", screenPos.x, screenPos.y, screenPos.z);
 
 	screen_ray = screenPos - glm::vec4(0.0);
 
 	worldPos = engine->GetCamera()->Transform.Position +
 				-(glm::vec3)screenPos * engine->GetCamera()->Transform.Position.z;
-	printf("in worldpos = %fx %fy %fz\n", worldPos.x, worldPos.y, worldPos.z);
+	// printf("in worldpos = %fx %fy %fz\n", worldPos.x, worldPos.y, worldPos.z);
 
 	fCursor_x = (float)worldPos.x * 50; // .... =_='
 	fCursor_y = (float)worldPos.y * 50;
@@ -64,4 +68,10 @@ void		UpdateParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *
 	engine->CLController.SetKernelArg(2, 6, sizeof(float), (void *)&fCursor_y);
 
 	engine->CLController.ExecuteParticleKernel(1, PSDatas->Particle);
+
+	// update distance mouse - particles for coloring
+	// engine->CLController.SetKernelArg(3, 2, sizeof(float), (void *)&fCursor_x);
+	// engine->CLController.SetKernelArg(3, 3, sizeof(float), (void *)&fCursor_y);
+
+	// engine->CLController.ExecuteParticleKernel(3, PSDatas->Particle);
 }

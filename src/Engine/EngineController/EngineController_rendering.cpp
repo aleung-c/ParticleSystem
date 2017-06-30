@@ -20,7 +20,6 @@ void		EngineController::render3DGameObject(GameObject	*obj)
 	}
 	else
 		glUniform1i(glGetUniformLocation(MainShaderProgramme, "has_texture"), GL_FALSE);
-	// opengl buffer loading.
 	if (obj->HasModel == true)
 	{
 		applyMatricesToObject(obj);
@@ -58,7 +57,6 @@ void		EngineController::renderMorphAnimation(GameObject	*obj)
 	}
 	else
 		glUniform1i(glGetUniformLocation(MorphTargetProgramme, "has_texture"), GL_FALSE);
-	// opengl buffer loading.
 	if (obj->HasModel == true)
 	{
 		applyMatricesToObject(obj);
@@ -218,25 +216,39 @@ void	EngineController::renderGameTextObject(GameTextObject *obj)
 	glDisableVertexAttribArray(0);
 }
 
+// --------------------------------------------------------------------	//
+//																		//
+//	Rendering Particles													//
+//																		//
+//	Exclusive to Particle system project.								//
+//																		//
+// --------------------------------------------------------------------	//
+
+
 void		EngineController::renderParticleObject(ParticleObject	*obj)
 {
 	glUniform1i(glGetUniformLocation(MainShaderProgramme, "has_texture"), GL_FALSE);
-	// opengl buffer loading.
+	glUniform1i(glGetUniformLocation(MainShaderProgramme, "particle_coloring"), GL_TRUE);
+
 	applyMatricesToParticleObject(obj);
 
-	// // ------ load vertex and draw them - LOCATION = 0
-	// // ----------- To display triangles from faces vertex
-	// glBindBuffer(GL_ARRAY_BUFFER, obj->GetFvbo());
-	// glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
-	// glEnableVertexAttribArray(0);
-	// glDrawArrays(GL_TRIANGLES, 0, obj->GetNbFaceVertices());
+	// ------- Sending distance from mouse(set in openCL kernel) for coloring.
+	// ------------- LOCATION = 2
+	glBindBuffer(GL_ARRAY_BUFFER, obj->Distance_Vbo);
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(2);
 
-	// ----------- To display only points from vertex -> useful for particles.
+	// ------- To display only points from vertex -> useful for particles.
+	// ------------- LOCATION = 0
 	glBindBuffer(GL_ARRAY_BUFFER, obj->GetVbo());
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(0);
+
+	// ------- Drawing the particles ----- //
 	glDrawArrays (GL_POINTS, 0, obj->ParticleNumber);
+	// ------- Drawing the particles ----- END //
 
 	// ----- disable all after draw;
 	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(2);
 }

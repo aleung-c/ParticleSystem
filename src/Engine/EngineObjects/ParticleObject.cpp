@@ -24,48 +24,54 @@ ParticleObject::~ParticleObject()
 void	ParticleObject::initParticleObject()
 {
 	Transform.Position = glm::vec3(0.0, 0.0, 0.0);
-	// for now, we will imagine euleur rotations.
 	Transform.Rotation = glm::vec3(0.0, 0.0, 0.0);
 	Transform.Scale = glm::vec3(1.0, 1.0, 1.0);
 
+	// ----- set particle positions buffers
+	float	zero;
+	int		ret;
+
+	zero = 0.0;
 	// set VAO
 	_vao = 0;
 	glGenVertexArrays(1, &_vao);
 	glBindVertexArray(_vao);
-
-	// set VBO
 	_vbo = 0;
 	glGenBuffers(1, &(_vbo));
-
-	// float x = 0.0;
-	// float y = 0.0;
-	// float z = 0.0;
-
-	// for (int i = 0; i != ParticleNumber; i++)
-	// {
-	// 	pos.push_back(glm::vec4(x, y, z, 1.0));
-	// 	x += 0.1;
-	// 	y += 0.1;
-	// 	z += 0.1;
-	// }
-
-	float	zero;
-
-	zero = 0.0;
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, ParticleNumber * sizeof(glm::vec4), NULL,
-					GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, ParticleNumber * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
 	glClearBufferfv(GL_ARRAY_BUFFER, _vbo, &zero);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(0);
 
-	// ObjMem = (cl_mem)gcl_gl_create_ptr_from_buffer(_vbo);
-	int ret;
-	ObjMem = clCreateFromGLBuffer(EngineController::Instance().CLController.Context, CL_MEM_WRITE_ONLY,
-		_vbo, &ret);
+	// Set interoperability OpenGL - OpenCL
+	ObjMem = clCreateFromGLBuffer(EngineController::Instance().CLController.Context,
+		CL_MEM_WRITE_ONLY, _vbo, &ret);
 	if (ret != CL_SUCCESS)
 	{
-		printf("clCreateFromGLBuffer: %s\n",
+		printf("clCreateFromGLBuffer particles: %s\n",
+			EngineController::Instance().CLController.GetCLErrorString(ret));
+	}
+
+	// ----- set particle distance to mouse buffers
+	// Will be used to set the color of the particles.
+	Distance_Vao = 0;
+	glGenVertexArrays(1, &Distance_Vao);
+	glBindVertexArray(Distance_Vao);
+	Distance_Vbo = 0;
+	glGenBuffers(1, &(Distance_Vbo));
+	glBindBuffer(GL_ARRAY_BUFFER, Distance_Vbo);
+	glBufferData(GL_ARRAY_BUFFER, ParticleNumber * sizeof(float), NULL, GL_STATIC_DRAW);
+	glClearBufferfv(GL_ARRAY_BUFFER, Distance_Vbo, &zero);
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(2);
+
+	// Set interoperability OpenGL - OpenCL
+	Distance_ObjMem = clCreateFromGLBuffer(EngineController::Instance().CLController.Context,
+		CL_MEM_WRITE_ONLY, Distance_Vbo, &ret);
+	if (ret != CL_SUCCESS)
+	{
+		printf("clCreateFromGLBuffer particles distance: %s\n",
 			EngineController::Instance().CLController.GetCLErrorString(ret));
 	}
 }

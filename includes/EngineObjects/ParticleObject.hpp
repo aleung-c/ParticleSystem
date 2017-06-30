@@ -11,7 +11,11 @@ class ParticleObject : public EngineObject
 		float			Speed;
 		float			Time;
 
-		cl_mem			ObjMem;
+		cl_mem			ObjMem; // using base class's vao/vbo
+
+		GLuint			Distance_Vao;
+		GLuint			Distance_Vbo;
+		cl_mem			Distance_ObjMem;
 
 	private:
 		void initParticleObject();

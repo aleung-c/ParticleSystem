@@ -1,23 +1,24 @@
 #version 410
 
-// in vec4					vertex_position;
-// in vec3					vertex_normal;
-// flat in vec3			color;
-in vec2					texture_coordinates;
-// flat in int				t_flag;
-
-
-// uniform int				texture_id = 0;
+// ----- Host set variables
 uniform bool			has_texture = false;
+uniform bool			particle_coloring = false;
 uniform sampler2D		texture_0;
-// uniform sampler2D		texture_1;
 
-// the final color the fragment will take.
+// ----- Incoming from vertex shader
+in vec2					texture_coordinates;
+in float				dist_to_grav_point;
+
+// ----- OUT COLOR -----
 out vec4				frag_colour;
+// ----- OUT COLOR -----
 
 void main ()
 {
 	vec4	texel;
+	float	r;
+	float	g;
+	float	b;
 	
 	if (has_texture == true)
 	{
@@ -26,6 +27,15 @@ void main ()
 	}
 	else
 	{
-		frag_colour = vec4(0.0, 1.0, 0.0, 1.0);
+		if (particle_coloring)
+		{
+			// red for now.
+			frag_colour = vec4(1.0, 0.0, 0.0, 1.0);
+		}
+		else
+		{
+			// just green will do.
+			frag_colour = vec4(0.0, 1.0, 0.0, 1.0);
+		}
 	}
 }

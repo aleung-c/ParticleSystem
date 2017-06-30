@@ -25,7 +25,6 @@ __kernel void	place_particles_spheric(__global float4 *vertices, __global float4
 	int			base;
 	float3		new_pos;
 	float3		replace_sphere;
-	float		rvals;
 
 	base = get_global_id(0);
 
@@ -43,16 +42,7 @@ __kernel void	place_particles_spheric(__global float4 *vertices, __global float4
 		// move the point in the opposite dirrection.
 		new_pos = new_pos + normalize(replace_sphere - new_pos) * radius;
 	}
-
-	// new_pos.x = 2.0 * M_PI * rand_suite[base];
-	// new_pos.x = acos(new_pos.x);
-	// rvals = 2.0 * rand_suite[base + 1] - 1.0;
-	// new_pos.y = asin(rvals);
-	// new_pos.z = 3.0 * dot(rand_suite[base + 2], 1.0 / radius);
-
-
-
-	vertices[base] =  (float4)(new_pos.x, new_pos.y, new_pos.z, 1.0f);
+	vertices[base] = (float4)(new_pos.x, new_pos.y, new_pos.z, 1.0f);
 }
 
 __kernel void	animate_particles(__global float4 *vertices, __global double *rand_suite,
@@ -103,14 +93,23 @@ __kernel void	animate_particles(__global float4 *vertices, __global double *rand
 		if (dist < 0.01)
 			reached = false;
 	}
-	// else
-	// {
-	// 	target_pos.x = x_gravity_point - rand_suite[base];
-	// 	target_pos.y = y_gravity_point - rand_suite[base + 1];
-	// 	target_pos.y = vertices[base].z - rand_suite[base + 2];
-	// 	vec_dir = normalize(target_pos - particle_pos);
-	// }
+	
 	// new position for the current particle
 	new_pos = particle_pos + vec_dir * speed;
 	vertices[base] = (float4)(new_pos.x, new_pos.y, new_pos.z, 1.0f);
 }
+
+// __kernel void	update_distance(__global float4 *vertices, __global float4 *distances,
+// 								float x_gravity_point, float y_gravity_point)
+// {
+// 	int					base;
+// 	float3				vert_pos;
+// 	float3				grav_point_pos;
+
+// 	base = get_global_id(0);
+// 	vert_pos = (float3)(vertices[base]);
+// 	grav_point_pos = (float3)(x_gravity_point, y_gravity_point, 0.0);
+// 	distances[base] = sqrt(pow(vert_pos.x - grav_point_pos.x, 2)
+// 			+ pow(vert_pos.y - grav_point_pos.y, 2)
+// 			+ pow(vert_pos.z - grav_point_pos.z, 2));
+// }
