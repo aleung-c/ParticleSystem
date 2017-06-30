@@ -63,5 +63,5 @@ void		UpdateParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *
 	engine->CLController.SetKernelArg(2, 5, sizeof(float), (void *)&fCursor_x);
 	engine->CLController.SetKernelArg(2, 6, sizeof(float), (void *)&fCursor_y);
 
-	engine->CLController.ExecuteParticleKernel(2, PSDatas->Particle);
+	engine->CLController.ExecuteParticleKernel(1, PSDatas->Particle);
 }
