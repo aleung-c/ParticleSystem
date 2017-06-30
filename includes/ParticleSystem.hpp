@@ -168,7 +168,12 @@ class					EngineController;
 
 typedef struct			s_ParticleSystemDatas
 {
+	EngineController	*engine;
 	ParticleObject		*Particle;
+
+	GLuint				Randsuite_vao;
+	GLuint				Randsuite_vbo;
+	cl_mem				Randsuite_ObjMem;
 
 	double				GravityPoint_x;
 	double				GravityPoint_y;

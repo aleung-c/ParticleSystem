@@ -8,6 +8,8 @@ class ParticleObject : public EngineObject
 	
 		int				ParticleNumber;
 		float			Radius;
+		float			Speed;
+		float			Time;
 
 		cl_mem			ObjMem;
 

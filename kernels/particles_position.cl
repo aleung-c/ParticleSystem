@@ -1,4 +1,4 @@
-__kernel void	place_particles(__global float4 *vertices, __global float4 *origine,
+__kernel void	place_particles_cubic(__global float4 *vertices, __global float4 *origine,
 								float radius, __global double *rand_suite)
 {
 	int			base;
@@ -8,15 +8,15 @@ __kernel void	place_particles(__global float4 *vertices, __global float4 *origin
 
 	base = get_global_id(0);
 	// cubic placement.
-	new_x_value = vertices[base].x - rand_suite[base];
-	new_y_value = vertices[base].y - rand_suite[base + 1];
-	new_z_value = vertices[base].z - rand_suite[base + 2];
+	new_x_value = 0.0 - rand_suite[base];
+	new_y_value = 0.0 - rand_suite[base + 1];
+	new_z_value = 0.0 - rand_suite[base + 2];
 
 	vertices[base] =  (float4)(new_x_value, new_y_value, new_z_value, 1.0f);
 }
 
-__kernel void	animate_particles(__global float4 *vertices, __global float4 *origine,
-								float radius, float x_gravity_point, float y_gravity_point)
+__kernel void	place_particles_spheric(__global float4 *vertices, __global float4 *origine,
+								float radius, __global double *rand_suite)
 {
 	int			base;
 	float		new_x_value;
@@ -24,9 +24,70 @@ __kernel void	animate_particles(__global float4 *vertices, __global float4 *orig
 	float		new_z_value;
 
 	base = get_global_id(0);
-	new_x_value = vertices[base].x + x_gravity_point * 0.001;
-	new_y_value = vertices[base].y + y_gravity_point * 0.001;;
-	new_z_value = vertices[base].z;
+	// cubic placement.
+	new_x_value = 0.0 - rand_suite[base + 3];
+	new_y_value = 0.0 - rand_suite[base + 4];
+	new_z_value = 0.0 - rand_suite[base + 5];
 
-	vertices[base] = (float4)(new_x_value, new_y_value, new_z_value, 1.0f);
+	vertices[base] =  (float4)(new_x_value, new_y_value, new_z_value, 1.0f);
+}
+
+__kernel void	animate_particles(__global float4 *vertices, __global double *rand_suite,
+								__global float4 *origine,
+								float radius, float speed,
+								float x_gravity_point, float y_gravity_point)
+{
+	int					base;
+	float3				new_pos;
+	float3				particle_pos;
+	float3				target_pos;
+	float3				vec_dir;
+	float				dist;
+	__private bool		reached;
+
+	base = get_global_id(0);
+	// position of the current particle
+	particle_pos.x = vertices[base].x;
+	particle_pos.y = vertices[base].y;
+	particle_pos.z = vertices[base].z;
+
+	//position of the target (ie mouse world position)
+	target_pos.x = x_gravity_point;
+	target_pos.y = y_gravity_point;
+	target_pos.z = 0.0;
+
+	dist = sqrt(pow(target_pos.x - particle_pos.x, 2)
+				+ pow(target_pos.y - particle_pos.y, 2)
+				+ pow(target_pos.z - particle_pos.z, 2));
+
+	if (reached == false)
+	{
+		vec_dir = normalize(target_pos - particle_pos);
+		if (dist < 0.01)
+			reached = true;
+	}
+	else
+	{
+		target_pos.x = x_gravity_point - rand_suite[base];
+		target_pos.y = y_gravity_point - rand_suite[base + 1];
+		target_pos.y = vertices[base].z - rand_suite[base + 2];
+		vec_dir = normalize(target_pos - particle_pos);
+
+		// recheck distance to radius around.
+		dist = sqrt(pow(target_pos.x - particle_pos.x, 2)
+			+ pow(target_pos.y - particle_pos.y, 2)
+			+ pow(target_pos.z - particle_pos.z, 2));
+		if (dist < 0.01)
+			reached = false;
+	}
+	// else
+	// {
+	// 	target_pos.x = x_gravity_point - rand_suite[base];
+	// 	target_pos.y = y_gravity_point - rand_suite[base + 1];
+	// 	target_pos.y = vertices[base].z - rand_suite[base + 2];
+	// 	vec_dir = normalize(target_pos - particle_pos);
+	// }
+	// new position for the current particle
+	new_pos = particle_pos + vec_dir * speed;
+	vertices[base] = (float4)(new_pos.x, new_pos.y, new_pos.z, 1.0f);
 }

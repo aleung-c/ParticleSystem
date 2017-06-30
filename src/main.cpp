@@ -6,7 +6,8 @@ int		main(void)
 	t_ParticleSystemDatas		PSDatas;
 
 	std::cout << "Hello particle system!" << std::endl;
-	
+
+	PSDatas.engine = Engine;
 	ParticleSystem_Init(Engine, &PSDatas);
 
 	ParticleSystem_SceneInit(Engine, &PSDatas);
