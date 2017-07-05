@@ -29,8 +29,8 @@ void main ()
 	{
 		if (particle_coloring)
 		{
-			r = 0.0 + dist_to_grav_point / 10.0;
-			g = 1.0 - dist_to_grav_point / 20.0;
+			r = 0.0 + dist_to_grav_point / 40.0;
+			g = 1.0 - dist_to_grav_point / 40.0;
 			b = 0.0 + dist_to_grav_point / 4.0;
 			frag_colour = vec4(r, g, b, 1.0);
 		}

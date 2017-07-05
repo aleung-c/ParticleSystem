@@ -183,11 +183,16 @@ typedef struct			s_ParticleSystemDatas
 	GLuint				Randsuite_vbo;
 	cl_mem				Randsuite_ObjMem;
 
-	double				GravityPoint_x;
-	double				GravityPoint_y;
+	float				GravityPoint_x;
+	float				GravityPoint_y;
 
 	double				Cursor_x;
 	double				Cursor_y;
+
+	float				World_fCursor_x;
+	float				World_fCursor_y;
+
+	bool				FollowKeyPressed;
 	// float				Cursor_pos[4];
 
 }						t_ParticleSystemDatas;
@@ -235,5 +240,6 @@ void					ParticleSystem_MemoryClean(EngineController *engine, t_ParticleSystemDa
 double					GetRandomDouble(double min, double max);
 
 void					KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void					GetMouseWorldPosition(t_ParticleSystemDatas *PSDatas);
 
 # endif

@@ -38,6 +38,8 @@ void		ParticleSystem_SceneInit(EngineController *engine, t_ParticleSystemDatas *
 	PSDatas->Particle->Transform.Position.x = 0.0;
 	PSDatas->Particle->Transform.Position.y = 0.0;
 	PSDatas->Particle->Transform.Position.z = 0.0;
+	PSDatas->GravityPoint_x = 0.0;
+	PSDatas->GravityPoint_y = 0.0;
 	PositionParticlesRandomly(engine, PSDatas);
 }
 

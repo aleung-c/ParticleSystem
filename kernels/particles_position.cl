@@ -52,13 +52,16 @@ __kernel void	animate_particles(__global float4 *vertices, //	0
 								float radius, //				4
 								float speed, //					5
 								float x_gravity_point, //		6
-								float y_gravity_point) //		7
+								float y_gravity_point, //		7
+								float x_mouse_point, //			8
+								float y_mouse_point, //			9
+								float radial_accel) //			10
 
 {
 	int					base;
 	float3				new_pos;
 	float3				particle_pos;
-	float3				target_pos;
+	// float3				target_pos;
 	float3				velocity;
 	float				dist;
 	__private float		angle_val_loc = 0.0;
@@ -70,21 +73,31 @@ __kernel void	animate_particles(__global float4 *vertices, //	0
 	particle_pos.z = vertices[base].z;
 
 	float3				normal;
-	float3				tangent; 
-	float3				t1;
-	float3				t2;
+	float3				tangent;
+	float3				cross_angle;
 
 	normal.x = particle_pos.x - x_gravity_point;
 	normal.y = particle_pos.y - y_gravity_point;
 	normal.z = particle_pos.z;
 
-	t1 = cross(normal, (float3)(0.0, 0.0, particle_pos.z));
-	t2 = cross(normal, (float3)(0.0, particle_pos.y, 0.0));
+	cross_angle.x = 0.0;
+	cross_angle.y = 0.0;
+	cross_angle.z = particle_pos.z;
 
-	if (length(t1) > length(t2))
-		tangent = t1;
-	else
-		tangent = t2;
+	tangent = cross(normal, cross_angle);
+
+	// Used for coloring with distance mouse-particle!
+	distances[base] = sqrt(pow(x_mouse_point - particle_pos.x, 2)
+				+ pow(y_mouse_point - particle_pos.y, 2)
+				+ pow(0.0 - particle_pos.z, 2));
+	// distances[base] = dist;
+
+	velocity = normalize(tangent);
+
+	// new position for the current particle
+	new_pos = particle_pos + velocity * speed;
+	vertices[base] = (float4)(new_pos.x, new_pos.y, new_pos.z, 1.0f);
+}
 
 	//position of the target (ie mouse world position) -> fonctionel;
 	// target_pos.x = x_gravity_point;
@@ -99,12 +112,12 @@ __kernel void	animate_particles(__global float4 *vertices, //	0
 	// 				+ (particle_pos.y - y_gravity_point) * cos(angle_val_loc);
 	// target_pos.z = 0.0;
 
-	// orbit 3D tests;
-	angle_val_loc += 0.1;
-	// ----- translation mouse pose ->>> particle pos.
-	target_pos.x = x_gravity_point + (particle_pos.x - x_gravity_point);
-	target_pos.y = y_gravity_point + (particle_pos.y - y_gravity_point);
-	target_pos.z = 0.0 + particle_pos.z;
+	// orbit 3D tests; -> semi fonctionnel.
+	// angle_val_loc += 0.1;
+	// // ----- translation mouse pose ->>> particle pos.
+	// target_pos.x = x_gravity_point + (particle_pos.x - x_gravity_point);
+	// target_pos.y = y_gravity_point + (particle_pos.y - y_gravity_point);
+	// target_pos.z = 0.0 + particle_pos.z;
 	// ----- rotation XYZ
 	// rotation X
 	// target_pos.y = cos(angle_val_loc) * target_pos.y + -sin(angle_val_loc) * target_pos.z;
@@ -119,17 +132,3 @@ __kernel void	animate_particles(__global float4 *vertices, //	0
 	// target_pos.x -= (particle_pos.x - x_gravity_point);
 	// target_pos.y -= (particle_pos.y - y_gravity_point);
 	// target_pos.z -= particle_pos.z;
-
-	// Used for coloring with distance mouse-particle!
-	dist = sqrt(pow(x_gravity_point - particle_pos.x, 2)
-				+ pow(y_gravity_point - particle_pos.y, 2)
-				+ pow(0.0 - particle_pos.z, 2));
-	distances[base] = dist;
-
-	velocity = normalize(tangent);
-	// velocity = normalize(target_pos - particle_pos);
-
-	// new position for the current particle
-	new_pos = particle_pos + velocity * speed;
-	vertices[base] = (float4)(new_pos.x, new_pos.y, new_pos.z, 1.0f);
-}

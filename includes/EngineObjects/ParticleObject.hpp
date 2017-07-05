@@ -11,6 +11,7 @@ class ParticleObject : public EngineObject
 		float			Speed;
 		float			Time;
 		float			Angle_val;
+		float			RadialAccel;
 
 		cl_mem			ObjMem; // using base class's vao/vbo
 
