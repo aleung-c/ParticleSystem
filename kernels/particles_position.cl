@@ -52,7 +52,8 @@ __kernel void	animate_particles(__global float4 *vertices, //	0
 								float radius, //				4
 								float speed, //					5
 								float x_gravity_point, //		6
-								float y_gravity_point) //		7
+								float y_gravity_point, //		7
+								float angle_val) //	8 
 {
 	int					base;
 	float3				new_pos;
@@ -60,6 +61,7 @@ __kernel void	animate_particles(__global float4 *vertices, //	0
 	float3				target_pos;
 	float3				vec_dir;
 	float				dist;
+	__private float			angle_val_loc = 0.0;
 	// __private bool		reached;
 
 	base = get_global_id(0);
@@ -69,10 +71,19 @@ __kernel void	animate_particles(__global float4 *vertices, //	0
 	particle_pos.z = vertices[base].z;
 
 	//position of the target (ie mouse world position)
-	target_pos.x = x_gravity_point;
-	target_pos.y = y_gravity_point;
+	// target_pos.x = x_gravity_point;
+	// target_pos.y = y_gravity_point;
+	// target_pos.z = 0.0;
+
+	// orbit test.
+	angle_val_loc += 0.1;
+	target_pos.x = x_gravity_point + (particle_pos.x - x_gravity_point) * cos(angle_val + angle_val_loc)
+					- (particle_pos.y - y_gravity_point) * sin(angle_val + angle_val_loc);
+	target_pos.y = y_gravity_point + (particle_pos.x - x_gravity_point) * sin(angle_val + angle_val_loc)
+					+ (particle_pos.y - y_gravity_point) * cos(angle_val + angle_val_loc);
 	target_pos.z = 0.0;
 
+	// Used for coloring with distance!
 	dist = sqrt(pow(target_pos.x - particle_pos.x, 2)
 				+ pow(target_pos.y - particle_pos.y, 2)
 				+ pow(target_pos.z - particle_pos.z, 2));

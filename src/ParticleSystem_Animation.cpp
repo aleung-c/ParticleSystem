@@ -12,6 +12,7 @@ void		PrepareParticlesAnimation(EngineController *engine, t_ParticleSystemDatas 
 	engine->CLController.SetKernelArg(2, 3, sizeof(float *), (void *)&PSDatas->Particle->Transform.Position);
 	engine->CLController.SetKernelArg(2, 4, sizeof(float), (void *)&PSDatas->Particle->Radius);
 	engine->CLController.SetKernelArg(2, 5, sizeof(float), (void *)&PSDatas->Particle->Speed);
+	engine->CLController.SetKernelArg(2, 8, sizeof(float), (void *)&PSDatas->Particle->Angle_val);
 	// engine->CLController.SetKernelArg(1, 3, sizeof(double *), (void *)&randsuite_ObjMem);	
 }
 
@@ -34,7 +35,6 @@ void		UpdateParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *
 	float		winZ = 50.0;
 	glm::vec4	screen_ray;
 	glm::vec3	worldPos;
-
 
 	in.x = (2.0f * ((float)(fCursor_x - 0) / (WINDOW_WIDTH - 0))) - 1.0f,
 	in.y = 1.0f - (2.0f * ((float)(fCursor_y - 0) / (WINDOW_HEIGHT - 0)));
@@ -63,6 +63,7 @@ void		UpdateParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *
 
 	engine->CLController.SetKernelArg(2, 6, sizeof(float), (void *)&fCursor_x);
 	engine->CLController.SetKernelArg(2, 7, sizeof(float), (void *)&fCursor_y);
+	// engine->CLController.SetKernelArg(2, 7, sizeof(float), (void *)&fCursor_y);
 
 	// Execute kernels.
 	engine->CLController.ExecuteParticleKernel(2, PSDatas->Particle);

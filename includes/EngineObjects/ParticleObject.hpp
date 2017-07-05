@@ -10,6 +10,7 @@ class ParticleObject : public EngineObject
 		float			Radius;
 		float			Speed;
 		float			Time;
+		float			Angle_val;
 
 		cl_mem			ObjMem; // using base class's vao/vbo
 

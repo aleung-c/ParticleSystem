@@ -1,6 +1,7 @@
 NAME = ParticleSystem
 
 SRC = ./src/main.cpp \
+./src/ParticleSystem_GetArgs.cpp \
 ./src/ParticleSystem_Events.cpp \
 ./src/ParticleSystem_Animation.cpp \
 ./src/ParticleSystem_Init.cpp \

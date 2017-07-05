@@ -1,13 +1,14 @@
 #include "../includes/ParticleSystem.hpp"
 
-int		main(void)
+int		main(int argc, char **argv)
 {
 	EngineController			*Engine = &EngineController::Instance();
 	t_ParticleSystemDatas		PSDatas;
 
-	std::cout << "Hello particle system!" << std::endl;
-
 	PSDatas.engine = Engine;
+
+	ParticleSystem_GetArgs(argc, argv, &PSDatas);
+
 	ParticleSystem_Init(Engine, &PSDatas);
 
 	ParticleSystem_SceneInit(Engine, &PSDatas);

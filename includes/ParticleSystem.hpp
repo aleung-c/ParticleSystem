@@ -97,6 +97,12 @@
 #define MAX_SOURCE_SIZE 50000
 
 /*
+**	Particles defines
+*/
+
+# define MAX_NB_PARTICLES 3000000
+
+/*
 **	Objects type handled by the engine.
 */
 
@@ -168,6 +174,8 @@ class					EngineController;
 
 typedef struct			s_ParticleSystemDatas
 {
+	int					NbParticlesAsked;
+
 	EngineController	*engine;
 	ParticleObject		*Particle;
 
@@ -210,6 +218,8 @@ typedef struct			s_ParticleSystemDatas
 /*
 **	C style function prototypes.
 */
+
+void					ParticleSystem_GetArgs(int argc, char **argv, t_ParticleSystemDatas *PSDatas);
 
 void					ParticleSystem_Init(EngineController *engine, t_ParticleSystemDatas *PSDatas);
 void					ParticleSystem_SceneInit(EngineController *engine, t_ParticleSystemDatas *PSDatas);

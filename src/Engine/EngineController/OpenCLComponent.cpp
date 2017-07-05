@@ -150,19 +150,26 @@ void			OpenCLComponent::SetKernelArg(int kernelSlot, int arg_index, size_t size,
 	}
 }
 
+/*
+**	After some test, I decided to let the api decides the localworksize,
+**	because IF the localworksize IS NOT multiple of globalworksize,
+**	nothing gets processed, and my number of particles is decided by user.
+*/
+
 void			OpenCLComponent::ExecuteParticleKernel(int kernelSlot, ParticleObject *particle)
 {
 	size_t				globalWorkSize;
-	size_t				localWorkSize;
+	// size_t				localWorkSize;
 
 	globalWorkSize = particle->ParticleNumber;
-	localWorkSize = 100;
+	// localWorkSize = 64;
+
 
 	glFinish();
 	clEnqueueAcquireGLObjects(CommandQueue, 1, &particle->ObjMem, 0, 0, 0);
 	// ret = clSetKernelArg(Kernel, 0, sizeof(cl_mem), (void *)&particle->ObjMem);
 	clEnqueueNDRangeKernel(CommandQueue, Kernels[kernelSlot], 1, NULL, &globalWorkSize,
-		&localWorkSize, 0, 0, 0);
+		NULL, 0, 0, 0);
 	clEnqueueReleaseGLObjects(CommandQueue, 1, &particle->ObjMem, 0, 0, 0);
 	clFinish(CommandQueue);
 }
