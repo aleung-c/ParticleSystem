@@ -52,17 +52,16 @@ __kernel void	animate_particles(__global float4 *vertices, //	0
 								float radius, //				4
 								float speed, //					5
 								float x_gravity_point, //		6
-								float y_gravity_point, //		7
-								float angle_val) //	8 
+								float y_gravity_point) //		7
+
 {
 	int					base;
 	float3				new_pos;
 	float3				particle_pos;
 	float3				target_pos;
-	float3				vec_dir;
+	float3				velocity;
 	float				dist;
-	__private float			angle_val_loc = 0.0;
-	// __private bool		reached;
+	__private float		angle_val_loc = 0.0;
 
 	base = get_global_id(0);
 	// position of the current particle
@@ -70,47 +69,67 @@ __kernel void	animate_particles(__global float4 *vertices, //	0
 	particle_pos.y = vertices[base].y;
 	particle_pos.z = vertices[base].z;
 
-	//position of the target (ie mouse world position)
+	float3				normal;
+	float3				tangent; 
+	float3				t1;
+	float3				t2;
+
+	normal.x = particle_pos.x - x_gravity_point;
+	normal.y = particle_pos.y - y_gravity_point;
+	normal.z = particle_pos.z;
+
+	t1 = cross(normal, (float3)(0.0, 0.0, particle_pos.z));
+	t2 = cross(normal, (float3)(0.0, particle_pos.y, 0.0));
+
+	if (length(t1) > length(t2))
+		tangent = t1;
+	else
+		tangent = t2;
+
+	//position of the target (ie mouse world position) -> fonctionel;
 	// target_pos.x = x_gravity_point;
 	// target_pos.y = y_gravity_point;
 	// target_pos.z = 0.0;
 
-	// orbit test.
-	angle_val_loc += 0.1;
-	target_pos.x = x_gravity_point + (particle_pos.x - x_gravity_point) * cos(angle_val + angle_val_loc)
-					- (particle_pos.y - y_gravity_point) * sin(angle_val + angle_val_loc);
-	target_pos.y = y_gravity_point + (particle_pos.x - x_gravity_point) * sin(angle_val + angle_val_loc)
-					+ (particle_pos.y - y_gravity_point) * cos(angle_val + angle_val_loc);
-	target_pos.z = 0.0;
+	// orbit 2D -> fonctionnel;
+	// angle_val_loc += 0.1;
+	// target_pos.x = x_gravity_point + (particle_pos.x - x_gravity_point) * cos(angle_val_loc)
+	// 				- (particle_pos.y - y_gravity_point) * sin(angle_val_loc);
+	// target_pos.y = y_gravity_point + (particle_pos.x - x_gravity_point) * sin(angle_val_loc)
+	// 				+ (particle_pos.y - y_gravity_point) * cos(angle_val_loc);
+	// target_pos.z = 0.0;
 
-	// Used for coloring with distance!
-	dist = sqrt(pow(target_pos.x - particle_pos.x, 2)
-				+ pow(target_pos.y - particle_pos.y, 2)
-				+ pow(target_pos.z - particle_pos.z, 2));
+	// orbit 3D tests;
+	angle_val_loc += 0.1;
+	// ----- translation mouse pose ->>> particle pos.
+	target_pos.x = x_gravity_point + (particle_pos.x - x_gravity_point);
+	target_pos.y = y_gravity_point + (particle_pos.y - y_gravity_point);
+	target_pos.z = 0.0 + particle_pos.z;
+	// ----- rotation XYZ
+	// rotation X
+	// target_pos.y = cos(angle_val_loc) * target_pos.y + -sin(angle_val_loc) * target_pos.z;
+	// target_pos.z = sin(angle_val_loc) * target_pos.y + cos(angle_val_loc) * target_pos.z; 
+	// // rotation Y
+	// target_pos.x = cos(angle_val_loc) * target_pos.x + sin(angle_val_loc) * target_pos.z;
+	// target_pos.z = -sin(angle_val_loc) * target_pos.x + cos(angle_val_loc) * target_pos.z;
+	// rotation Z
+	// target_pos.x = cos(angle_val_loc) * target_pos.x + -sin(angle_val_loc) * target_pos.y;
+	// target_pos.y = sin(angle_val_loc) * target_pos.x + cos(angle_val_loc) * target_pos.y;
+	// // ----- translation particle pos ->>> mouse pos
+	// target_pos.x -= (particle_pos.x - x_gravity_point);
+	// target_pos.y -= (particle_pos.y - y_gravity_point);
+	// target_pos.z -= particle_pos.z;
+
+	// Used for coloring with distance mouse-particle!
+	dist = sqrt(pow(x_gravity_point - particle_pos.x, 2)
+				+ pow(y_gravity_point - particle_pos.y, 2)
+				+ pow(0.0 - particle_pos.z, 2));
 	distances[base] = dist;
 
-	// if (reached == false)
-	// {
-		vec_dir = normalize(target_pos - particle_pos);
-		// if (dist < 0.01)
-			// reached = true;
-	// }
-	// else
-	// {
-	// 	target_pos.x = x_gravity_point - rand_suite[base];
-	// 	target_pos.y = y_gravity_point - rand_suite[base + 1];
-	// 	target_pos.y = vertices[base].z - rand_suite[base + 2];
-	// 	vec_dir = normalize(target_pos - particle_pos);
-
-	// 	// recheck distance to radius around.
-	// 	dist = sqrt(pow(target_pos.x - particle_pos.x, 2)
-	// 		+ pow(target_pos.y - particle_pos.y, 2)
-	// 		+ pow(target_pos.z - particle_pos.z, 2));
-	// 	if (dist < 0.01)
-	// 		reached = false;
-	// }
+	velocity = normalize(tangent);
+	// velocity = normalize(target_pos - particle_pos);
 
 	// new position for the current particle
-	new_pos = particle_pos + vec_dir * speed;
+	new_pos = particle_pos + velocity * speed;
 	vertices[base] = (float4)(new_pos.x, new_pos.y, new_pos.z, 1.0f);
 }

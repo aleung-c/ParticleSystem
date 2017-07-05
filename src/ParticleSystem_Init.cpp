@@ -34,7 +34,7 @@ void		ParticleSystem_SceneInit(EngineController *engine, t_ParticleSystemDatas *
 {
 	// Setting the main particle object.
 	PSDatas->Particle = new ParticleObject(PSDatas->NbParticlesAsked, 30.0);
-	PSDatas->Particle->Speed = 0.08;
+	PSDatas->Particle->Speed = 0.5;
 	PSDatas->Particle->Transform.Position.x = 0.0;
 	PSDatas->Particle->Transform.Position.y = 0.0;
 	PSDatas->Particle->Transform.Position.z = 0.0;

@@ -1,5 +1,10 @@
 #include "../includes/ParticleSystem.hpp"
 
+/*
+**	Used BEFORE the main loop, to set the main variables that will be used
+**	in the kernel.
+*/
+
 void		PrepareParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *PSDatas)
 {
 	(void)engine;
@@ -12,9 +17,15 @@ void		PrepareParticlesAnimation(EngineController *engine, t_ParticleSystemDatas 
 	engine->CLController.SetKernelArg(2, 3, sizeof(float *), (void *)&PSDatas->Particle->Transform.Position);
 	engine->CLController.SetKernelArg(2, 4, sizeof(float), (void *)&PSDatas->Particle->Radius);
 	engine->CLController.SetKernelArg(2, 5, sizeof(float), (void *)&PSDatas->Particle->Speed);
-	engine->CLController.SetKernelArg(2, 8, sizeof(float), (void *)&PSDatas->Particle->Angle_val);
+	// engine->CLController.SetKernelArg(2, 8, sizeof(float), (void *)&PSDatas->Particle->Angle_val);
 	// engine->CLController.SetKernelArg(1, 3, sizeof(double *), (void *)&randsuite_ObjMem);	
 }
+
+/*
+**	Used at each main loop turn.
+**	Will update the input values for the kernel, which will in turn calculate the
+**	new position of each particle.
+*/
 
 // TODO : FIX mouse precision.
 void		UpdateParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *PSDatas)
