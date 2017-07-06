@@ -1,3 +1,20 @@
+// ----------------------------------------------------------------	//
+//	KEY EXPLANATIONS												//
+//	What each key does for aleung-c's Particle System's program.	//
+//																	//
+// ----------------------------------------------------------------	//
+/*
+
+	WZAQSD		->		move camera.
+	E			-> 		place particles in CUBIC mode.
+	R			->		place particles in SPHERIC mode.
+	Space		->		toggle between mouse following and set gravity point modes.
+	C			->		Set particles in ATTRACTION mode.
+	V			->		Set particles in REPULSION mode.
+	F			->		Augment particles speed.
+	G			->		Reduce particles speed.
+*/
+
 #ifndef PARTICLESYSTEM_HPP
 # define PARTICLESYSTEM_HPP
 
@@ -97,10 +114,15 @@
 #define MAX_SOURCE_SIZE 50000
 
 /*
-**	Particles defines
+**	Particles/program defines
 */
 
 # define MAX_NB_PARTICLES 3000000
+# define CAM_MOVE_SPEED 0.4
+
+# define MAX_PARTICLE_SPEED 2.0
+# define PARTICLE_SPEED_MODIFIER 0.1
+
 
 /*
 **	Objects type handled by the engine.
@@ -130,6 +152,22 @@ typedef struct						s_bmp_texture
 	// Actual RGB data
 	unsigned char					*data;
 }									t_bmp_texture;
+
+typedef enum						s_ParticleStatus
+{
+	ORBIT_DEFAULT,
+	ATTRACTION,
+	REPULSION
+}									t_ParticleStatus;
+
+typedef enum						s_Directions
+{
+	NONE,
+	UP,
+	LEFT,
+	DOWN,
+	RIGHT
+}									t_Directions;
 
 /*
 **	Freetype character helper struct.
@@ -192,8 +230,22 @@ typedef struct			s_ParticleSystemDatas
 	float				World_fCursor_x;
 	float				World_fCursor_y;
 
+	float				PrevWorld_fCursor_x;
+	float				PrevWorld_fCursor_y;
+
+	float				MousePosCamAnchor_x;
+	float				MousePosCamAnchor_y;
+
+	glm::mat4			UnprojectMatrice;
+
+	GameObject			*Camera;
+	glm::vec3			*CamLookAt;
+
+	int					ParticleStatus;
 	bool				FollowKeyPressed;
-	// float				Cursor_pos[4];
+	bool				RightClickPressed;
+
+	t_Directions		PressedDirection;
 
 }						t_ParticleSystemDatas;
 
@@ -230,6 +282,8 @@ void					ParticleSystem_Init(EngineController *engine, t_ParticleSystemDatas *PS
 void					ParticleSystem_SceneInit(EngineController *engine, t_ParticleSystemDatas *PSDatas);
 void					PositionParticlesRandomly(EngineController *engine, t_ParticleSystemDatas *PSDatas);
 
+void					UpdateCamera(t_ParticleSystemDatas *PSDatas);
+
 void					PrepareParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *PSDatas);
 void					UpdateParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *PSDatas);
 
@@ -240,6 +294,7 @@ void					ParticleSystem_MemoryClean(EngineController *engine, t_ParticleSystemDa
 double					GetRandomDouble(double min, double max);
 
 void					KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void					MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void					GetMouseWorldPosition(t_ParticleSystemDatas *PSDatas);
 
 # endif

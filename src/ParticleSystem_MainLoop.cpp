@@ -14,20 +14,24 @@ void		ParticleSystem_MainLoop(EngineController *engine, t_ParticleSystemDatas *P
 	fpsCount->Transform.Position.y += 15.0;
 	while (!glfwWindowShouldClose(engine->Window))
 	{
-		// ------ FPS counter;
+		// ------ Ms counter;
 		double currentTime = glfwGetTime();
 
 		nbFrames++;
-		if ( currentTime - lastTime >= 1.0 )
+		if (currentTime - lastTime >= 1.0)
 		{
 			fpsCount->Text = std::to_string(1000.0 / double(nbFrames)) + "ms";
 			nbFrames = 0;
 			lastTime += 1.0;
 		}
-
 		glfwPollEvents();
 		glfwGetCursorPos(engine->Window, &PSDatas->Cursor_x, &PSDatas->Cursor_y);
+
 		GetMouseWorldPosition(PSDatas);
+		UpdateCamera(PSDatas);
+		// PSDatas->PrevWorld_fCursor_x = PSDatas->World_fCursor_x;
+		// PSDatas->PrevWorld_fCursor_y = PSDatas->World_fCursor_y;
+
 		UpdateParticlesAnimation(engine, PSDatas);
 		// printf("Mouse at %fx %fy\n", PSDatas->Cursor_x, PSDatas->Cursor_y); // -> functional, but screenspace.
 

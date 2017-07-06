@@ -41,9 +41,11 @@ void		UpdateParticlesAnimation(EngineController *engine, t_ParticleSystemDatas *
 		engine->CLController.SetKernelArg(2, 6, sizeof(float), (void *)&PSDatas->GravityPoint_x);
 		engine->CLController.SetKernelArg(2, 7, sizeof(float), (void *)&PSDatas->GravityPoint_y);
 	}
+	engine->CLController.SetKernelArg(2, 5, sizeof(float), (void *)&PSDatas->Particle->Speed);
 	engine->CLController.SetKernelArg(2, 8, sizeof(float), (void *)&PSDatas->World_fCursor_x);
 	engine->CLController.SetKernelArg(2, 9, sizeof(float), (void *)&PSDatas->World_fCursor_y);
 	engine->CLController.SetKernelArg(2, 10, sizeof(float), (void *)&PSDatas->Particle->RadialAccel);
+	engine->CLController.SetKernelArg(2, 11, sizeof(int), (void *)&PSDatas->ParticleStatus);
 
 	// Execute kernels.
 	engine->CLController.ExecuteParticleKernel(2, PSDatas->Particle);

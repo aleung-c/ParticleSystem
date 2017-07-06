@@ -21,6 +21,14 @@ void		ParticleSystem_Init(EngineController *engine, t_ParticleSystemDatas *PSDat
 	// Init Events
 	glfwSetWindowUserPointer(engine->Window, (void *)PSDatas);
 	glfwSetKeyCallback(engine->Window, &KeyCallback);
+	glfwSetMouseButtonCallback(engine->Window, &MouseButtonCallback);
+	
+	PSDatas->RightClickPressed = false;
+	PSDatas->MousePosCamAnchor_x = 0.0;
+	PSDatas->MousePosCamAnchor_y = 0.0;
+	PSDatas->PressedDirection = NONE;
+	PSDatas->Camera = engine->GetCamera();
+	PSDatas->CamLookAt = engine->GetCameraLookAt();
 }
 
 /*
@@ -33,13 +41,15 @@ void		ParticleSystem_Init(EngineController *engine, t_ParticleSystemDatas *PSDat
 void		ParticleSystem_SceneInit(EngineController *engine, t_ParticleSystemDatas *PSDatas)
 {
 	// Setting the main particle object.
-	PSDatas->Particle = new ParticleObject(PSDatas->NbParticlesAsked, 30.0);
+	PSDatas->Particle = new ParticleObject(PSDatas->NbParticlesAsked, 10.0);
 	PSDatas->Particle->Speed = 0.5;
 	PSDatas->Particle->Transform.Position.x = 0.0;
 	PSDatas->Particle->Transform.Position.y = 0.0;
 	PSDatas->Particle->Transform.Position.z = 0.0;
 	PSDatas->GravityPoint_x = 0.0;
 	PSDatas->GravityPoint_y = 0.0;
+	PSDatas->ParticleStatus = ORBIT_DEFAULT;
+	PSDatas->UnprojectMatrice = -(engine->MatPerspectiveProjection * engine->MatView);
 	PositionParticlesRandomly(engine, PSDatas);
 }
 
@@ -81,17 +91,15 @@ void		PositionParticlesRandomly(EngineController *engine, t_ParticleSystemDatas 
 	/* Set OpenCL Kernel Parameters */
 	engine->CLController.SetKernelArg(0, 0, sizeof(cl_mem), (void *)&PSDatas->Particle->ObjMem);
 	engine->CLController.SetKernelArg(0, 1, sizeof(float *), (void *)&PSDatas->Particle->Transform.Position);
-	engine->CLController.SetKernelArg(0, 2, sizeof(float), (void *)&PSDatas->Particle->Radius); // !! beware of this syntax.
+	engine->CLController.SetKernelArg(0, 2, sizeof(float), (void *)&PSDatas->Particle->Radius);
 	engine->CLController.SetKernelArg(0, 3, sizeof(cl_mem), (void *)&PSDatas->Randsuite_ObjMem);
 
 	/* Set OpenCL Kernel Parameters for sphere as well */
 	engine->CLController.SetKernelArg(1, 0, sizeof(cl_mem), (void *)&PSDatas->Particle->ObjMem);
 	engine->CLController.SetKernelArg(1, 1, sizeof(float *), (void *)&PSDatas->Particle->Transform.Position);
-	engine->CLController.SetKernelArg(1, 2, sizeof(float), (void *)&PSDatas->Particle->Radius); // !! beware of this syntax.
+	engine->CLController.SetKernelArg(1, 2, sizeof(float), (void *)&PSDatas->Particle->Radius);
 	engine->CLController.SetKernelArg(1, 3, sizeof(cl_mem), (void *)&PSDatas->Randsuite_ObjMem);
 
 	/* Execute the kernel, as of now in NDRange -> data parallelism. */
 	engine->CLController.ExecuteParticleKernel(0, PSDatas->Particle);
 }
-
-

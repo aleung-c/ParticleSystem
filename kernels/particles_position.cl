@@ -55,7 +55,8 @@ __kernel void	animate_particles(__global float4 *vertices, //	0
 								float y_gravity_point, //		7
 								float x_mouse_point, //			8
 								float y_mouse_point, //			9
-								float radial_accel) //			10
+								float radial_accel, //			10
+								int particle_status) //			11
 
 {
 	int					base;
@@ -76,29 +77,43 @@ __kernel void	animate_particles(__global float4 *vertices, //	0
 	float3				tangent;
 	float3				cross_angle;
 
-	normal.x = particle_pos.x - x_gravity_point;
-	normal.y = particle_pos.y - y_gravity_point;
-	normal.z = particle_pos.z;
+	if (particle_status == 0)
+	{
+		normal.x = particle_pos.x - x_gravity_point;
+		normal.y = particle_pos.y - y_gravity_point;
+		normal.z = particle_pos.z;
 
-	cross_angle.x = 0.0;
-	cross_angle.y = 0.0;
-	cross_angle.z = particle_pos.z;
+		cross_angle.x = 0.0;
+		cross_angle.y = 0.0;
+		cross_angle.z = particle_pos.z;
 
-	tangent = cross(normal, cross_angle);
+		tangent = cross(normal, cross_angle);
 
+		velocity = normalize(tangent);
+	}
+	else if (particle_status == 1)
+	{
+		velocity.x = x_gravity_point - particle_pos.x;
+		velocity.y = y_gravity_point - particle_pos.y;
+		velocity.z = 0.0 - particle_pos.z;
+		velocity = normalize(velocity);
+	}
+	else if (particle_status == 2)
+	{
+		velocity.x = particle_pos.x - x_gravity_point;
+		velocity.y = particle_pos.y - y_gravity_point;
+		velocity.z = particle_pos.z;
+		velocity = normalize(velocity);
+	}
 	// Used for coloring with distance mouse-particle!
 	distances[base] = sqrt(pow(x_mouse_point - particle_pos.x, 2)
 				+ pow(y_mouse_point - particle_pos.y, 2)
 				+ pow(0.0 - particle_pos.z, 2));
-	// distances[base] = dist;
-
-	velocity = normalize(tangent);
 
 	// new position for the current particle
 	new_pos = particle_pos + velocity * speed;
 	vertices[base] = (float4)(new_pos.x, new_pos.y, new_pos.z, 1.0f);
 }
-
 	//position of the target (ie mouse world position) -> fonctionel;
 	// target_pos.x = x_gravity_point;
 	// target_pos.y = y_gravity_point;

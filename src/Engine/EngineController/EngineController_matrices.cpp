@@ -27,7 +27,7 @@ void		EngineController::loadMatrices()
 
 	// Project matrices init;
 	CameraNear = 0.1;
-	CameraFar = 100.0;
+	CameraFar = 300.0;
 	CameraFov = 45.0;
 	CameraAspect = 1.77; // 4/3, 16/9, etc 1 = 4/4
 	MatPerspectiveProjection = glm::perspective(CameraFov, CameraAspect, CameraNear, CameraFar);
@@ -64,7 +64,7 @@ void		EngineController::applyMatricesToObject(GameObject *Object)
 	MatModel = glm::translate(MatModel, glm::vec3(-Object->BoundingBox.LocalCenter));
 
 	// Final MVP matrice merging.
-	MatMVP = MatPerspectiveProjection * MatView * MatModel;	
+	MatMVP = MatPerspectiveProjection * MatView * MatModel;
 
 	// Send it to shader.
 	GLint uniform_mat = glGetUniformLocation(MainShaderProgramme, "mvp_matrix");
