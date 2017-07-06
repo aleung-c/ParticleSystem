@@ -47,103 +47,54 @@ __kernel void	place_particles_spheric(__global float4 *vertices, __global float4
 
 __kernel void	animate_particles(__global float4 *vertices, //	0
 								__global float *distances, //	1
-								__global double *rand_suite, //	2
-								__global float4 *origine, //	3
-								float radius, //				4
-								float speed, //					5
-								float x_gravity_point, //		6
-								float y_gravity_point, //		7
-								float x_mouse_point, //			8
-								float y_mouse_point, //			9
-								float radial_accel, //			10
-								int particle_status) //			11
+								__global float4 *origine, //	2
+								float speed, //					3
+								float x_gravity_point, //		4
+								float y_gravity_point, //		5
+								float x_mouse_point, //			6
+								float y_mouse_point, //			7
+								int particle_status) //			8
 
 {
-	int					base;
-	float3				new_pos;
-	float3				particle_pos;
-	// float3				target_pos;
-	float3				velocity;
+	__private int		base = get_global_id(0);
+	float4				velocity;
 	float				dist;
-	__private float		angle_val_loc = 0.0;
+	float4				normal;
+	float4				tangent;
+	float4				cross_angle;
 
-	base = get_global_id(0);
-	// position of the current particle
-	particle_pos.x = vertices[base].x;
-	particle_pos.y = vertices[base].y;
-	particle_pos.z = vertices[base].z;
-
-	float3				normal;
-	float3				tangent;
-	float3				cross_angle;
-
+	;
 	if (particle_status == 0)
 	{
-		normal.x = particle_pos.x - x_gravity_point;
-		normal.y = particle_pos.y - y_gravity_point;
-		normal.z = particle_pos.z;
+		normal.x = vertices[base].x - x_gravity_point;
+		normal.y = vertices[base].y - y_gravity_point;
+		normal.z = vertices[base].z;
 
 		cross_angle.x = 0.0;
 		cross_angle.y = 0.0;
-		cross_angle.z = particle_pos.z;
-
+		cross_angle.z = vertices[base].z;
 		tangent = cross(normal, cross_angle);
-
 		velocity = normalize(tangent);
 	}
 	else if (particle_status == 1)
 	{
-		velocity.x = x_gravity_point - particle_pos.x;
-		velocity.y = y_gravity_point - particle_pos.y;
-		velocity.z = 0.0 - particle_pos.z;
+		velocity.x = x_gravity_point - vertices[base].x;
+		velocity.y = y_gravity_point - vertices[base].y;
+		velocity.z = -vertices[base].z;
 		velocity = normalize(velocity);
 	}
 	else if (particle_status == 2)
 	{
-		velocity.x = particle_pos.x - x_gravity_point;
-		velocity.y = particle_pos.y - y_gravity_point;
-		velocity.z = particle_pos.z;
+		velocity.x = vertices[base].x - x_gravity_point;
+		velocity.y = vertices[base].y - y_gravity_point;
+		velocity.z = vertices[base].z;
 		velocity = normalize(velocity);
 	}
 	// Used for coloring with distance mouse-particle!
-	distances[base] = sqrt(pow(x_mouse_point - particle_pos.x, 2)
-				+ pow(y_mouse_point - particle_pos.y, 2)
-				+ pow(0.0 - particle_pos.z, 2));
+	distances[base] = sqrt(pow(x_mouse_point - vertices[base].x, 2)
+				+ pow(y_mouse_point - vertices[base].y, 2)
+				+ pow(- vertices[base].z, 2));
 
 	// new position for the current particle
-	new_pos = particle_pos + velocity * speed;
-	vertices[base] = (float4)(new_pos.x, new_pos.y, new_pos.z, 1.0f);
+	vertices[base] = vertices[base] + velocity * speed;
 }
-	//position of the target (ie mouse world position) -> fonctionel;
-	// target_pos.x = x_gravity_point;
-	// target_pos.y = y_gravity_point;
-	// target_pos.z = 0.0;
-
-	// orbit 2D -> fonctionnel;
-	// angle_val_loc += 0.1;
-	// target_pos.x = x_gravity_point + (particle_pos.x - x_gravity_point) * cos(angle_val_loc)
-	// 				- (particle_pos.y - y_gravity_point) * sin(angle_val_loc);
-	// target_pos.y = y_gravity_point + (particle_pos.x - x_gravity_point) * sin(angle_val_loc)
-	// 				+ (particle_pos.y - y_gravity_point) * cos(angle_val_loc);
-	// target_pos.z = 0.0;
-
-	// orbit 3D tests; -> semi fonctionnel.
-	// angle_val_loc += 0.1;
-	// // ----- translation mouse pose ->>> particle pos.
-	// target_pos.x = x_gravity_point + (particle_pos.x - x_gravity_point);
-	// target_pos.y = y_gravity_point + (particle_pos.y - y_gravity_point);
-	// target_pos.z = 0.0 + particle_pos.z;
-	// ----- rotation XYZ
-	// rotation X
-	// target_pos.y = cos(angle_val_loc) * target_pos.y + -sin(angle_val_loc) * target_pos.z;
-	// target_pos.z = sin(angle_val_loc) * target_pos.y + cos(angle_val_loc) * target_pos.z; 
-	// // rotation Y
-	// target_pos.x = cos(angle_val_loc) * target_pos.x + sin(angle_val_loc) * target_pos.z;
-	// target_pos.z = -sin(angle_val_loc) * target_pos.x + cos(angle_val_loc) * target_pos.z;
-	// rotation Z
-	// target_pos.x = cos(angle_val_loc) * target_pos.x + -sin(angle_val_loc) * target_pos.y;
-	// target_pos.y = sin(angle_val_loc) * target_pos.x + cos(angle_val_loc) * target_pos.y;
-	// // ----- translation particle pos ->>> mouse pos
-	// target_pos.x -= (particle_pos.x - x_gravity_point);
-	// target_pos.y -= (particle_pos.y - y_gravity_point);
-	// target_pos.z -= particle_pos.z;

@@ -26,15 +26,9 @@ void		ParticleSystem_MainLoop(EngineController *engine, t_ParticleSystemDatas *P
 		}
 		glfwPollEvents();
 		glfwGetCursorPos(engine->Window, &PSDatas->Cursor_x, &PSDatas->Cursor_y);
-
 		GetMouseWorldPosition(PSDatas);
 		UpdateCamera(PSDatas);
-		// PSDatas->PrevWorld_fCursor_x = PSDatas->World_fCursor_x;
-		// PSDatas->PrevWorld_fCursor_y = PSDatas->World_fCursor_y;
-
 		UpdateParticlesAnimation(engine, PSDatas);
-		// printf("Mouse at %fx %fy\n", PSDatas->Cursor_x, PSDatas->Cursor_y); // -> functional, but screenspace.
-
 		engine->Draw();
 	}
 }

@@ -30,7 +30,7 @@ SRC = ./src/main.cpp \
 
 OBJ = $(SRC:.cpp=.o)
 
-CC = clang++ -g -Wall -Werror -Wextra $(FREETYPE2_I)
+CC = clang++ -O3 -Wall -Werror -Wextra $(FREETYPE2_I)
 
 # Linking opengl and lib GLFW.
 GL = -framework OpenGL
