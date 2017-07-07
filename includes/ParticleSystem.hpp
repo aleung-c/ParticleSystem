@@ -117,7 +117,7 @@
 **	Particles/program defines
 */
 
-# define MAX_NB_PARTICLES 3000000
+# define MAX_NB_PARTICLES 5000000
 # define CAM_MOVE_SPEED 0.4
 
 # define MAX_PARTICLE_SPEED 2.0
@@ -275,6 +275,8 @@ typedef struct			s_ParticleSystemDatas
 /*
 **	C style function prototypes.
 */
+
+void					sig_handler(int signo);
 
 void					ParticleSystem_GetArgs(int argc, char **argv, t_ParticleSystemDatas *PSDatas);
 

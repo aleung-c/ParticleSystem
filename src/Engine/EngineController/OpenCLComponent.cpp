@@ -184,12 +184,21 @@ void			OpenCLComponent::CleanMemory()
 	for (std::vector<cl_kernel>::iterator it = Kernels.begin(); it != Kernels.end(); it++)
 	{
 		ret = clReleaseKernel(*it);
+		if (ret != CL_SUCCESS)
+			std::cout << "kernel release error: " << GetCLErrorString(ret) << std::endl;
 	}
 	ret = clReleaseProgram(Program);
+	if (ret != CL_SUCCESS)
+			std::cout << "program release error: " << GetCLErrorString(ret) << std::endl;
 	ret = clReleaseCommandQueue(CommandQueue);
+	if (ret != CL_SUCCESS)
+			std::cout << "cmd queue release error: " << GetCLErrorString(ret) << std::endl;
 	ret = clReleaseContext(Context);
+	if (ret != CL_SUCCESS)
+			std::cout << "context release error: " << GetCLErrorString(ret) << std::endl;
 	if (source_str)
 		free(source_str);
+	std::cout << "OpenCL memory freed!" << std::endl;
 }
 
 const char		*OpenCLComponent::GetCLErrorString(cl_int error)

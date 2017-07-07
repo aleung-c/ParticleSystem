@@ -29,6 +29,7 @@ SRC = ./src/main.cpp \
 ./src/Engine/EngineObjects/ParticleObject.cpp
 
 OBJ = $(SRC:.cpp=.o)
+OBJ_PATH = ./freetype-2.4.0/objs/autofit.o
 
 CC = clang++ -O3 -Wall -Werror -Wextra $(FREETYPE2_I)
 
@@ -54,7 +55,11 @@ freetype :
 
 clean:
 	rm -rf $(OBJ)
+ifneq ("$(wildcard $(OBJ_PATH))", "")
 	make clean -C ./freetype-2.4.0/
+else
+
+endif
 
 fclean: clean
 	rm -rf $(NAME)

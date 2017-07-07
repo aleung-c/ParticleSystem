@@ -1,17 +1,26 @@
 #include "../includes/ParticleSystem.hpp"
 
+/*
+**	The main function for event handling. Catch the keys and prepare
+**	to apply the required transformations.
+*/
+
 void	KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	t_ParticleSystemDatas			*PSDatas;
 
-	(void)key;
 	(void)scancode;
-	(void)action;
 	(void)mods;
 	PSDatas = (t_ParticleSystemDatas *)glfwGetWindowUserPointer(window);
 	// On key press. It seems these events are triggered ONLY ONCE.
 	if (action == GLFW_PRESS)
 	{
+		if (key == GLFW_KEY_ESCAPE)
+		{
+			std::cout << "Exiting ParticleSystem ..." << std::endl;
+			PSDatas->engine->CLController.CleanMemory();
+			exit(0);
+		}
 		if (key == GLFW_KEY_E)
 		{
 			PSDatas->GravityPoint_x = 0.0;
@@ -97,11 +106,7 @@ void	KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			PSDatas->PressedDirection = NONE;
 		}
 	}
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	{
-		std::cout << "Exiting ParticleSystem ..." << std::endl;
-		exit(0);
-	}
+	
 }
 
 void	MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
