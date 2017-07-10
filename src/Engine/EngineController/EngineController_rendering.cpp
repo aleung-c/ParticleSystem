@@ -224,6 +224,9 @@ void	EngineController::renderGameTextObject(GameTextObject *obj)
 //																		//
 // --------------------------------------------------------------------	//
 
+/*
+**	Note: location 1 is reserved to UVs in the shaders.
+*/
 
 void		EngineController::renderParticleObject(ParticleObject	*obj)
 {

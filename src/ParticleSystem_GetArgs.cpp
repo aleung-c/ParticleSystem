@@ -18,7 +18,7 @@ void		ParticleSystem_GetArgs(int argc, char **argv, t_ParticleSystemDatas *PSDat
 		{
 			PSDatas->NbParticlesAsked = std::stoi(argv[1], NULL, 10);
 		}
-		catch (const std::invalid_argument& ia) {
+		catch (const std::exception& ia) {
 	  		std::cerr << KRED "Error: Invalid argument: " KRESET << ia.what() << std::endl;
 	  		std::cout << KRED "Usage: ./ParticleSystem [nb_particle]" KRESET << std::endl;
 			exit(-1);

@@ -40,7 +40,7 @@ void	ParticleObject::initParticleObject()
 	glGenBuffers(1, &(_vbo));
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	glBufferData(GL_ARRAY_BUFFER, ParticleNumber * sizeof(glm::vec4), NULL, GL_STATIC_DRAW);
-	glClearBufferfv(GL_ARRAY_BUFFER, _vbo, &zero);
+	// glClearBufferfv(GL_ARRAY_BUFFER, _vbo, &zero);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(0);
 

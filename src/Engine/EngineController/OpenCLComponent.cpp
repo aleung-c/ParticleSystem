@@ -161,16 +161,26 @@ void			OpenCLComponent::SetKernelArg(int kernelSlot, int arg_index, size_t size,
 
 void			OpenCLComponent::ExecuteParticleKernel(int kernelSlot, ParticleObject *particle)
 {
-	size_t				globalWorkSize;
-	// size_t				localWorkSize;
-
-	globalWorkSize = particle->ParticleNumber;
-	// localWorkSize = 64;
+	int		ret;
+	size_t localWorkSize[] = {64, 16};
+	size_t numLocalGroups[] = {ceil(particle->ParticleNumber/localWorkSize[0]),
+								ceil(particle->ParticleNumber/localWorkSize[1])};
+	size_t globalSize[] = {localWorkSize[0] * numLocalGroups[0], localWorkSize[1] * numLocalGroups[1]};
 
 	glFinish();
 	clEnqueueAcquireGLObjects(CommandQueue, 1, &particle->ObjMem, 0, 0, 0);
-	clEnqueueNDRangeKernel(CommandQueue, Kernels[kernelSlot], 1, NULL, &globalWorkSize,
-		NULL, 0, 0, 0);
+	if ((size_t)particle->ParticleNumber < localWorkSize[0])
+	{
+		globalSize[0] = (size_t)particle->ParticleNumber;
+		localWorkSize[0] = (size_t)particle->ParticleNumber;
+	}
+
+	ret = clEnqueueNDRangeKernel(CommandQueue, Kernels[kernelSlot], 1, NULL, globalSize,
+		localWorkSize, 0, 0, 0);
+	if (ret != CL_SUCCESS)
+	{
+		std::cout << "clEnqueueNDRangeKernel error: " << GetCLErrorString(ret) << std::endl;
+	}
 	clEnqueueReleaseGLObjects(CommandQueue, 1, &particle->ObjMem, 0, 0, 0);
 	clFinish(CommandQueue);
 }

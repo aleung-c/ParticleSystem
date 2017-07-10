@@ -16,7 +16,7 @@ __kernel void	place_particles_cubic(__global float4 *vertices, __global float4 *
 
 /*
 **	Placing the particle in a sphere with a bad method: i just put back the points that 
-**	are not in the sphere, with a vector displacement.
+**	are not in the sphere, with a reversed vector displacement.
 */
 
 __kernel void	place_particles_spheric(__global float4 *vertices, __global float4 *origine,
@@ -63,20 +63,7 @@ __kernel void	animate_particles(__global float4 *vertices, //	0
 	float4				tangent;
 	float4				cross_angle;
 
-	;
-	if (particle_status == 0)
-	{
-		normal.x = vertices[base].x - x_gravity_point;
-		normal.y = vertices[base].y - y_gravity_point;
-		normal.z = vertices[base].z;
-
-		cross_angle.x = 0.0;
-		cross_angle.y = 0.0;
-		cross_angle.z = vertices[base].z;
-		tangent = cross(normal, cross_angle);
-		velocity = normalize(tangent);
-	}
-	else if (particle_status == 1)
+	if (particle_status == 1)
 	{
 		velocity.x = x_gravity_point - vertices[base].x;
 		velocity.y = y_gravity_point - vertices[base].y;
@@ -90,6 +77,19 @@ __kernel void	animate_particles(__global float4 *vertices, //	0
 		velocity.z = vertices[base].z;
 		velocity = normalize(velocity);
 	}
+	else
+	{
+		normal.x = vertices[base].x - x_gravity_point;
+		normal.y = vertices[base].y - y_gravity_point;
+		normal.z = vertices[base].z;
+
+		cross_angle.x = 0.0;
+		cross_angle.y = 0.0;
+		cross_angle.z = vertices[base].z + 0.01;
+		tangent = cross(normal, cross_angle);
+		velocity = normalize(tangent);
+	}
+
 	// Used for coloring with distance mouse-particle!
 	distances[base] = sqrt(pow(x_mouse_point - vertices[base].x, 2)
 				+ pow(y_mouse_point - vertices[base].y, 2)

@@ -33,4 +33,6 @@ void		ParticleSystem_MainLoop(EngineController *engine, t_ParticleSystemDatas *P
 		engine->Draw();
 	}
 	engine->CLController.CleanMemory();
+	glfwDestroyWindow(engine->Window);
+    glfwTerminate();
 }
