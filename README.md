@@ -1,4 +1,4 @@
-# particle_system
+# ParticleSystem
 
 This project is a system of particles, implemented in C++ with OpenGL and GLFW for the display, and OpenCL for the particle handling,
 made to run on a mac os system.
