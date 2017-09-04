@@ -29,4 +29,5 @@ However, the subject is very extensive, and I strongly recommend [*The OpenCL Pr
 to learn more about parallel computing and OpenCL.
 
 Video of the program running:
+
 [![Particle System video link](https://img.youtube.com/vi/NLhrn4jX7YM/0.jpg)](https://www.youtube.com/watch?v=NLhrn4jX7YM)
